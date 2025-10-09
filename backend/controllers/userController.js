@@ -2,11 +2,21 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import registerValidation from "../validations/Joi/registerValidation.js";
+import loginValidation from "../validations/Joi/loginValidation.js";
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     throw new Error("Please fill all the inputs.");
+  }
+
+  const { error } = registerValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Validation Error",
+      details: error.details.map(d => d.message),
+    });
   }
 
   const userExists = await User.findOne({ email });
@@ -35,10 +45,21 @@ const createUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  const { error } = loginValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Validation Error",
+      details: error.details.map(d => d.message),
+    });
+  }
+
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    const isPasswordValid = bcrypt.compare(password, existingUser.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
     if (isPasswordValid) {
       createToken(res, existingUser._id);
 
@@ -51,6 +72,10 @@ const loginUser = asyncHandler(async (req, res) => {
       return;
     }
   }
+  res.status(400).json({
+    message: "Invalid credentials",
+  });
+  return;
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
