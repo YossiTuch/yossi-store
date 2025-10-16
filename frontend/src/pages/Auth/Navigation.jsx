@@ -8,12 +8,14 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useLoginMutation } from "@/redux/api/usersApiSlice";
 
 const Navigation = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
@@ -63,6 +65,16 @@ const Navigation = () => {
           <span className="nav-item-name mt-[3rem] hidden">Favorite</span>
         </Link>
       </div>
+
+      <div className="relative">
+        <button
+          onClick={toggleDropdown}
+          className="glex text-gray-800 outline-none focus:items-center"
+        >
+          {}
+        </button>
+      </div>
+
       <ul>
         <li>
           <Link

@@ -15,6 +15,9 @@
       "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"
     ]
   ],
+  "javascript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "typescript.tsdk": "node_modules/typescript/lib"
 }
