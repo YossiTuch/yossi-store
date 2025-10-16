@@ -10,9 +10,12 @@ import {
 import { FaHeart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useLoginMutation } from "@/redux/api/usersApiSlice";
+import { useLoginMutation } from "../../redux/api/usersApiSlice";
+import { logout } from "../../redux/features/auth/authSlice";
+import { DarkThemeToggle } from "flowbite-react";
 
 const Navigation = () => {
+  const { userInfo } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -26,6 +29,22 @@ const Navigation = () => {
   const closeSidebar = () => {
     setShowSidebar(false);
   };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [logoutApiCall] = useLoginMutation();
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div
       style={{ zIndex: 999 }}
@@ -33,6 +52,9 @@ const Navigation = () => {
       id="navigation-container"
     >
       <div className="flex flex-col justify-center space-y-4">
+        <div>
+          <DarkThemeToggle />
+        </div>
         <Link
           to="/"
           className="flex transform items-center transition-transform hover:translate-x-2"
@@ -71,7 +93,11 @@ const Navigation = () => {
           onClick={toggleDropdown}
           className="glex text-gray-800 outline-none focus:items-center"
         >
-          {}
+          {userInfo ? (
+            <span className="text-white">{userInfo.username}</span>
+          ) : (
+            <></>
+          )}
         </button>
       </div>
 
