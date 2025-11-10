@@ -5,10 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <div className="h-full dark:bg-slate-950 dark:text-amber-400">
+    <div className="h-full dark:bg-slate-900 dark:text-amber-400">
       <ToastContainer />
       <Navigation />
-      <main className="py-3">
+      <main className="max-md:pt-10">
         <Outlet />
       </main>
     </div>
