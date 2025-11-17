@@ -12,7 +12,7 @@ import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 router.route("/").post(authenticate, authorizeAdmin, createCategory);
 router.route("/:categoryId").put(authenticate, authorizeAdmin, updateCategory);
-router
+router 
   .route("/:categoryId")
   .delete(authenticate, authorizeAdmin, removeCategory);
 

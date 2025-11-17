@@ -58,7 +58,7 @@ const Navigation = () => {
   };
 
   return (
-    <>
+    <div>
       {/* Mobile Top Navbar */}
       <div className="fixed top-0 right-0 left-0 z-[999] bg-black text-white lg:hidden">
         <div className="flex h-14 items-center justify-between px-4">
@@ -227,10 +227,10 @@ const Navigation = () => {
         )}
       </div>
 
-      {/* Desktop Sidebar (unchanged) */}
+      {/* Desktop Sidebar  */}
       <div
         style={{ zIndex: 999 }}
-        className={`${showSidebar ? "lg:hidden" : "lg:flex"} fixed hidden h-screen w-[4%] flex-col justify-between bg-black p-4 text-white hover:w-[15%]`}
+        className={`${showSidebar ? "lg:hidden" : "lg:flex"} fixed hidden h-screen flex-col justify-between bg-black p-4 text-white hover:w-[15%]`}
         id="navigation-container"
       >
         <div className="flex flex-col justify-center space-y-4">
@@ -299,7 +299,7 @@ const Navigation = () => {
           </button>
           {dropdownOpen && userInfo && (
             <ul
-              className={`absolute right-0 mt-2 mr-14 space-y-2 bg-white text-gray-600 ${!userInfo.isAdmin ? "-top-20" : "-top-80"} dark:bg-slate-900 dark:text-white`}
+              className={`absolute right-0 mr-14 space-y-1.5 bg-white text-gray-600 ${!userInfo.isAdmin ? "-top-20" : "-top-80"} dark:bg-slate-900 dark:text-white`}
             >
               {userInfo.isAdmin && (
                 <>
@@ -389,7 +389,7 @@ const Navigation = () => {
           </ul>
         )}
       </div>
-    </>
+    </div>
   );
 };
 export default Navigation;
