@@ -1,4 +1,6 @@
 const CategoryList = () => {
-  return <div>CategoryList</div>;
-};
-export default CategoryList;
+  return (
+    <div>CategoryList</div>
+  )
+}
+export default CategoryList
