@@ -11,7 +11,7 @@ const CategoryForm = ({
         <input
           type="text"
           className="w-full rounded-lg border px-4 py-3"
-          placeholder="Write category name"
+          placeholder="Category name"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />

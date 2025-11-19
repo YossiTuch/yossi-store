@@ -34,7 +34,7 @@ const CategoryList = () => {
         toast.error(result.error);
       } else {
         setName("");
-        toast.success(`${result.name} is created.`);
+        toast.success(`${result.name} was created.`);
       }
       refetch();
     } catch (error) {
@@ -62,7 +62,7 @@ const CategoryList = () => {
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success(`${result.name} is updated`);
+        toast.success(`${result.name} was updated`);
         setSelectedCategory(null);
         setUpdatingName("");
         setModalVisible(false);
@@ -80,14 +80,14 @@ const CategoryList = () => {
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success(`${result.name} is deleted.`);
+        toast.success(`${result.name} was deleted.`);
         setSelectedCategory(null);
         setModalVisible(false);
       }
       refetch();
     } catch (error) {
       console.error(error);
-      toast.error("Category delection failed. Tray again.");
+      toast.error("Category deletion failed. Try again.");
     }
   };
 
