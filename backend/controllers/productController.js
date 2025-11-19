@@ -1,24 +1,15 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
+import productValidation from "../validations/Joi/productValidation.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
-
-    // Validation
-    switch (true) {
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
-      case !description:
-        return res.json({ error: "Description is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
-      case !category:
-        return res.json({ error: "Category is required" });
-      case !quantity:
-        return res.json({ error: "Quantity is required" });
+    const { error } = productValidation(req.fields);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation Error",
+        details: error.details.map(d => d.message),
+      });
     }
 
     const product = new Product({ ...req.fields });
@@ -32,22 +23,12 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
-
-    // Validation
-    switch (true) {
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
-      case !description:
-        return res.json({ error: "Description is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
-      case !category:
-        return res.json({ error: "Category is required" });
-      case !quantity:
-        return res.json({ error: "Quantity is required" });
+    const { error } = productValidation(req.fields);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation Error",
+        details: error.details.map(d => d.message),
+      });
     }
 
     const product = await Product.findByIdAndUpdate(
