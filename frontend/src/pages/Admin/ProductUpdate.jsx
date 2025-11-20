@@ -8,15 +8,15 @@ import {
 } from "../../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
+import AdminMenu from "./AdminMenu";
 
 const AdminProductUpdate = () => {
   const params = useParams();
 
   const { data: productData } = useGetProductByIdQuery(params._id);
 
-  console.log(productData);
-
   const [image, setImage] = useState(productData?.image || "");
+  const [imagePreview, setImagePreview] = useState(productData?.image || "");
   const [name, setName] = useState(productData?.name || "");
   const [description, setDescription] = useState(
     productData?.description || "",
@@ -25,42 +25,59 @@ const AdminProductUpdate = () => {
   const [category, setCategory] = useState(productData?.category || "");
   const [quantity, setQuantity] = useState(productData?.quantity || "");
   const [brand, setBrand] = useState(productData?.brand || "");
-  const [stock, setStock] = useState(productData?.countInStock);
+  const [stock, setStock] = useState(productData?.countInStock || 0);
+  const [selectedImageName, setSelectedImageName] = useState("");
 
   const navigate = useNavigate();
 
   const { data: categories = [] } = useFetchCategoriesQuery();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
+  const [uploadProductImage, { isLoading: isUploading }] =
+    useUploadProductImageMutation();
 
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
-  const [deleteProduct] = useDeleteProductMutation();
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
 
   useEffect(() => {
     if (productData && productData._id) {
+      const categoryValue =
+        typeof productData.category === "string"
+          ? productData.category
+          : productData.category?._id || "";
+
       setName(productData.name);
       setDescription(productData.description);
       setPrice(productData.price);
-      setCategory(productData.category?._id);
+      setCategory(categoryValue);
       setQuantity(productData.quantity);
       setBrand(productData.brand);
       setImage(productData.image);
+      setImagePreview(productData.image);
+      setStock(productData.countInStock || 0);
+      if (productData.image) {
+        const imageNameFromUrl = productData.image.split("/").pop();
+        setSelectedImageName(imageNameFromUrl || "");
+      }
     }
   }, [productData]);
 
   const uploadFileHandler = async (e) => {
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    formData.append("image", file);
+    setSelectedImageName(file.name);
     try {
       const res = await uploadProductImage(formData).unwrap();
-      toast.success("Item added successfully", {
+      toast.success("Image uploaded successfully", {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 2000,
       });
       setImage(res.image);
+      setImagePreview(res.image);
     } catch (err) {
-      toast.success("Item added successfully", {
+      toast.error("Image upload failed. Try again.", {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 2000,
       });
@@ -80,7 +97,10 @@ const AdminProductUpdate = () => {
       formData.append("brand", brand);
       formData.append("countInStock", stock);
 
-      const data = await updateProduct({ productId: params._id, formData });
+      const data = await updateProduct({
+        productId: params._id,
+        formData,
+      }).unwrap();
 
       if (data?.error) {
         toast.error(data.error, {
@@ -110,7 +130,7 @@ const AdminProductUpdate = () => {
       );
       if (!answer) return;
 
-      const { data } = await deleteProduct(params._id);
+      const data = await deleteProduct(params._id).unwrap();
       toast.success(`"${data.name}" is deleted`, {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 2000,
@@ -126,106 +146,137 @@ const AdminProductUpdate = () => {
   };
 
   return (
-    <>
-      <div className="container sm:mx-[0] xl:mx-[9rem]">
+    <section className="min-h-screen w-full bg-slate-100 py-6 dark:bg-slate-950">
+      <div className="container px-4 sm:mx-0 sm:px-6 md:px-8 xl:mx-[9rem]">
         <div className="flex flex-col md:flex-row">
-          <div className="p-3 md:w-3/4">
-            <div className="h-12">Update / Delete Product</div>
+        <AdminMenu/>
+          <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-lg md:w-3/4 dark:border-slate-700 dark:bg-slate-900">
+            <div className="h-12 text-2xl font-semibold">
+              Update / Delete Product
+            </div>
 
-            {image && (
+            {imagePreview && (
               <div className="text-center">
                 <img
-                  src={image}
+                  src={imagePreview}
                   alt="product"
-                  className="mx-auto block h-[40%] w-full"
+                  className="mx-auto block max-h-[200px]"
                 />
               </div>
             )}
 
-            <div className="mb-3">
-              <label className="block w-full cursor-pointer rounded-lg px-4 py-2 py-11 text-center font-bold text-white">
-                {image ? image.name : "Upload image"}
+            <div className="mb-6">
+              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 hover:bg-white hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400 dark:hover:bg-slate-950">
+                {selectedImageName ||
+                  (image ? "Replace Image" : "Upload Image")}
+                {isUploading && (
+                  <span className="ml-2 text-xs text-slate-500">
+                    Uploading...
+                  </span>
+                )}
                 <input
                   type="file"
                   name="image"
                   accept="image/*"
                   onChange={uploadFileHandler}
-                  className="text-white"
+                  className="hidden"
                 />
               </label>
             </div>
 
-            <div className="p-3">
-              <div className="flex flex-wrap">
-                <div className="one">
-                  <label htmlFor="name">Name</label> <br />
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800/50">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium" htmlFor="name">
+                    Name
+                  </label>
+                  <br />
                   <input
                     type="text"
-                    className="mr-[5rem] mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
 
-                <div className="two">
-                  <label htmlFor="name block">Price</label> <br />
+                <div>
+                  <label className="text-sm font-medium" htmlFor="price">
+                    Price
+                  </label>
+                  <br />
                   <input
                     type="number"
-                    className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap">
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="name block">Quantity</label> <br />
+                  <label className="text-sm font-medium" htmlFor="quantity">
+                    Quantity
+                  </label>
+                  <br />
                   <input
                     type="number"
                     min="1"
-                    className="mr-[5rem] mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label htmlFor="name block">Brand</label> <br />
+                  <label className="text-sm font-medium" htmlFor="brand">
+                    Brand
+                  </label>
+                  <br />
                   <input
                     type="text"
-                    className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
                   />
                 </div>
               </div>
 
-              <label htmlFor="" className="my-5">
+              <label
+                htmlFor="description"
+                className="my-5 block text-sm font-medium"
+              >
                 Description
               </label>
               <textarea
-                type="text"
-                className="mb-3 w-[95%] rounded-lg border bg-[#101011] p-2 text-white"
+                id="description"
+                className="mb-3 w-full resize-none rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
 
-              <div className="flex justify-between">
+              <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="name block">Count In Stock</label> <br />
+                  <label className="text-sm font-medium" htmlFor="stock">
+                    Count In Stock
+                  </label>
+                  <br />
                   <input
                     type="text"
-                    className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="">Category</label> <br />
+                  <label className="text-sm font-medium" htmlFor="category">
+                    Category
+                  </label>
+                  <br />
                   <select
                     placeholder="Choose Category"
-                    className="mr-[5rem] mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     {categories?.map((c) => (
@@ -237,25 +288,27 @@ const AdminProductUpdate = () => {
                 </div>
               </div>
 
-              <div className="">
+              <div className="mt-6 flex flex-col gap-3 md:flex-row">
                 <button
                   onClick={handleSubmit}
-                  className="mt-5 mr-6 rounded-lg bg-green-600 px-10 py-4 text-lg font-bold"
+                  disabled={isUpdating || isDeleting}
+                  className="rounded-xl bg-green-600 px-10 py-4 text-lg font-semibold text-white transition hover:bg-green-700 focus:ring-2 focus:ring-green-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-500/40"
                 >
-                  Update
+                  {isUpdating ? "Updating..." : "Update"}
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="mt-5 rounded-lg bg-pink-600 px-10 py-4 text-lg font-bold"
+                  disabled={isUpdating || isDeleting}
+                  className="rounded-xl bg-pink-600 px-10 py-4 text-lg font-semibold text-white transition hover:bg-pink-700 focus:ring-2 focus:ring-pink-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-500/40"
                 >
-                  Delete
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 };
 

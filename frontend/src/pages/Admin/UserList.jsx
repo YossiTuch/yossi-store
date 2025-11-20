@@ -66,7 +66,7 @@ const UserList = () => {
         </Message>
       ) : (
         <div className="flex flex-col md:flex-row">
-          {/* <AdminMenu /> */}
+          <AdminMenu />
           <div className="-mx-2 w-full overflow-x-auto sm:mx-auto md:w-4/5">
             <table className="mx-auto w-full min-w-[640px]">
               <thead>

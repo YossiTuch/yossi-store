@@ -6,6 +6,7 @@ import {
 } from "../../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
+import AdminMenu from "./AdminMenu";
 
 const ProductList = () => {
   const [image, setImage] = useState("");
@@ -17,10 +18,13 @@ const ProductList = () => {
   const [brand, setBrand] = useState("");
   const [stock, setStock] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+  const [selectedImageName, setSelectedImageName] = useState("");
   const navigate = useNavigate();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
-  const [createProduct] = useCreateProductMutation();
+  const [uploadProductImage, { isLoading: isUploading }] =
+    useUploadProductImageMutation();
+  const [createProduct, { isLoading: isCreating }] =
+    useCreateProductMutation();
   const { data: categories } = useFetchCategoriesQuery();
 
   const handleSubmit = async (e) => {
@@ -49,7 +53,10 @@ const ProductList = () => {
 
   const uploadFileHandler = async (e) => {
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    formData.append("image", file);
+    setSelectedImageName(file.name);
 
     try {
       const res = await uploadProductImage(formData).unwrap();
@@ -64,6 +71,7 @@ const ProductList = () => {
   return (
     <section className="min-h-screen w-full bg-slate-100 py-6 dark:bg-slate-950">
       <div className="container px-4 sm:mx-0 sm:px-6 md:px-8 xl:mx-[9rem]">
+      <AdminMenu/>
         <div className="flex flex-col md:flex-row">
           <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-lg md:w-3/4 dark:border-slate-700 dark:bg-slate-900">
             <div className="h-12 text-2xl font-semibold">Create Product</div>
@@ -79,15 +87,20 @@ const ProductList = () => {
             )}
 
             <div className="mb-6">
-              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 dark:hover:bg-slate-950 hover:bg-white hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400">
-                {image ? image.name : "Upload Image"}
+              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 hover:bg-white hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400 dark:hover:bg-slate-950">
+                {selectedImageName || (image ? "Change Image" : "Upload Image")}
+                {isUploading && (
+                  <span className="ml-2 text-xs text-slate-500">
+                    Uploading...
+                  </span>
+                )}
 
                 <input
                   type="file"
                   name="image"
                   accept="image/*"
                   onChange={uploadFileHandler}
-                  className={!image ? "hidden" : ""}
+                  className="hidden"
                 />
               </label>
             </div>
@@ -195,9 +208,10 @@ const ProductList = () => {
 
               <button
                 onClick={handleSubmit}
-                className="mt-6 rounded-xl bg-blue-500 px-10 py-4 text-lg font-semibold text-white transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-amber-600 dark:hover:bg-amber-800 dark:focus:ring-amber-500/50"
+                disabled={isCreating || isUploading}
+                className="mt-6 rounded-xl bg-blue-500 px-10 py-4 text-lg font-semibold text-white transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full dark:bg-amber-600 dark:hover:bg-amber-800 dark:focus:ring-amber-500/50"
               >
-                Submit
+                {isCreating ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
