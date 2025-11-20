@@ -66,124 +66,148 @@ const ProductList = () => {
   };
 
   return (
-    <div className="container sm:mx-[0] xl:mx-[9rem]">
-      <div className="flex flex-col md:flex-row">
-        <div className="p-3 md:w-3/4">
-          <div className="h-12 text-2xl">Create Product</div>
+    <section className="min-h-screen w-full bg-slate-100 py-6 dark:bg-slate-950">
+      <div className="container px-4 sm:mx-0 sm:px-6 md:px-8 xl:mx-[9rem]">
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-lg md:w-3/4 dark:border-slate-700 dark:bg-slate-900">
+            <div className="h-12 text-2xl font-semibold">Create Product</div>
 
-          {imageUrl && (
-            <div className="text-center">
-              <img
-                src={imageUrl}
-                alt="product"
-                className="mx-auto block max-h-[200px]"
-              />
-            </div>
-          )}
-
-          <div className="mb-3">
-            <label className="block w-full cursor-pointer rounded-lg border px-4 py-11 text-center font-bold hover:shadow-2xl hover:scale-101  ease-in duration-100">
-              {image ? image.name : "Upload Image"}
-
-              <input
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={uploadFileHandler}
-                className={!image ? "hidden" : "text-white"}
-              />
-            </label>
-          </div>
-
-          <div className="p-3">
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name">Name</label> <br />
-                <input
-                  type="text"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+            {imageUrl && (
+              <div className="text-center">
+                <img
+                  src={imageUrl}
+                  alt="product"
+                  className="mx-auto block max-h-[200px]"
                 />
               </div>
-              <div className="two ml-10">
-                <label htmlFor="name block">Price</label> <br />
+            )}
+
+            <div className="mb-6">
+              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 hover:bg-slate-950 hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400">
+                {image ? image.name : "Upload Image"}
+
                 <input
-                  type="number"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={uploadFileHandler}
+                  className={!image ? "hidden" : ""}
                 />
-              </div>
-            </div>
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name block">Quantity</label> <br />
-                <input
-                  type="number"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-              <div className="two ml-10">
-                <label htmlFor="name block">Brand</label> <br />
-                <input
-                  type="text"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
+              </label>
             </div>
 
-            <label htmlFor="" className="my-5">
-              Description
-            </label>
-            <textarea
-              type="text"
-              className="mb-3 w-[95%] rounded-lg border bg-[#101011] p-2 text-white"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
-
-            <div className="flex justify-between">
-              <div>
-                <label htmlFor="name block">Count In Stock</label> <br />
-                <input
-                  type="text"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  value={stock}
-                  onChange={(e) => setStock(e.target.value)}
-                />
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800/50">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium" htmlFor="name">
+                    Name
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium" htmlFor="price">
+                    Price
+                  </label>
+                  <br />
+                  <input
+                    type="number"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium" htmlFor="quantity">
+                    Quantity
+                  </label>
+                  <br />
+                  <input
+                    type="number"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium" htmlFor="brand">
+                    Brand
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="">Category</label> <br />
-                <select
-                  placeholder="Choose Category"
-                  className="mb-3 w-[30rem] rounded-lg border bg-[#101011] p-4 text-white"
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {categories?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+              <label
+                htmlFor="description"
+                className="my-5 block text-sm font-medium"
+              >
+                Description
+              </label>
+              <textarea
+                type="text"
+                id="description"
+                className="mb-3 w-full resize-none rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium" htmlFor="stock">
+                    Count In Stock
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium" htmlFor="category">
+                    Category
+                  </label>
+                  <br />
+                  <select
+                    placeholder="Choose Category"
+                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    {categories?.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              <button
+                onClick={handleSubmit}
+                className="mt-6 rounded-xl bg-blue-500 px-10 py-4 text-lg font-semibold text-white transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-amber-600 dark:hover:bg-amber-800 dark:focus:ring-amber-500/50"
+              >
+                Submit
+              </button>
             </div>
-
-            <button
-              onClick={handleSubmit}
-              className="mt-5 rounded-lg bg-pink-600 px-10 py-4 text-lg font-bold"
-            >
-              Submit
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
