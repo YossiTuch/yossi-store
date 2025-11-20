@@ -27,6 +27,12 @@ const productSchema = Joi.object({
   brand: Joi.string().trim().min(1).required().messages({
     "string.empty": "Brand is required",
   }),
+  countInStock: Joi.number().integer().min(0).required().messages({
+    "number.base": "Count in stock must be a number",
+    "number.integer": "Count in stock must be an integer",
+    "number.min": "Count in stock cannot be negative",
+    "any.required": "Count in stock is required",
+  }),
 });
 
 const productValidation = product => {

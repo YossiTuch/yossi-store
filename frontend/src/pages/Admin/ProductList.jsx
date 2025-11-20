@@ -37,17 +37,13 @@ const ProductList = () => {
       productData.append("brand", brand);
       productData.append("countInStock", stock);
 
-      const { data } = await createProduct(productData);
+      const product = await createProduct(productData).unwrap();
 
-      if (data.error) {
-        toast.error("Product create failed. Try Again.");
-      } else {
-        toast.success(`${data.name} is created`);
-        navigate("/");
-      }
+      toast.success(`${product.name} is created`);
+      navigate("/");
     } catch (error) {
       console.error(error);
-      toast.error("Product create failed. Try Again.");
+      toast.error(error?.data?.message ?? "Product create failed. Try Again.");
     }
   };
 
@@ -83,7 +79,7 @@ const ProductList = () => {
             )}
 
             <div className="mb-6">
-              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 hover:bg-slate-950 hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400">
+              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 dark:hover:bg-slate-950 hover:bg-white hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400">
                 {image ? image.name : "Upload Image"}
 
                 <input
