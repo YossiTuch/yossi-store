@@ -6,7 +6,7 @@ const router = express.Router();
 import {
   addProduct,
   updateProductDetails,
-  removeProduct,
+  deleteProduct,
   fetchProducts,
   fetchProductById,
   fetchAllProducts,
@@ -33,7 +33,7 @@ router
   .route("/:id")
   .get(fetchProductById)
   .put(authenticate, authorizeAdmin, formidable(), updateProductDetails)
-  .delete(authenticate, authorizeAdmin, removeProduct);
+  .delete(authenticate, authorizeAdmin, deleteProduct);
 
 router.route("/filtered-products").post(filterProducts);
 

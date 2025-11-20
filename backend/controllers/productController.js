@@ -46,7 +46,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
   }
 });
 
-const removeProduct = asyncHandler(async (req, res) => {
+const deleteProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     res.json(product);
@@ -120,7 +120,7 @@ const addProductReview = asyncHandler(async (req, res) => {
 
     if (product) {
       const alreadyReviewed = product.reviews.find(
-        (r) => r.user.toString() === req.user._id.toString()
+        r => r.user.toString() === req.user._id.toString()
       );
 
       if (alreadyReviewed) {
@@ -194,7 +194,7 @@ const filterProducts = asyncHandler(async (req, res) => {
 export {
   addProduct,
   updateProductDetails,
-  removeProduct,
+  deleteProduct,
   fetchProducts,
   fetchProductById,
   fetchAllProducts,
