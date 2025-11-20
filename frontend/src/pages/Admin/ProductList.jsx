@@ -1,223 +1,101 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  useCreateProductMutation,
-  useUploadProductImageMutation,
-} from "../../redux/api/productApiSlice";
-import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import moment from "moment";
+import { useAllProductsQuery } from "../../redux/api/productApiSlice";
 import AdminMenu from "./AdminMenu";
 
 const ProductList = () => {
-  const [image, setImage] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [brand, setBrand] = useState("");
-  const [stock, setStock] = useState(0);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [selectedImageName, setSelectedImageName] = useState("");
-  const navigate = useNavigate();
+  const { data: products, isLoading, isError } = useAllProductsQuery();
 
-  const [uploadProductImage, { isLoading: isUploading }] =
-    useUploadProductImageMutation();
-  const [createProduct, { isLoading: isCreating }] =
-    useCreateProductMutation();
-  const { data: categories } = useFetchCategoriesQuery();
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const productData = new FormData();
-      productData.append("image", image);
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price);
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("brand", brand);
-      productData.append("countInStock", stock);
-
-      const product = await createProduct(productData).unwrap();
-
-      toast.success(`${product.name} is created`);
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.data?.message ?? "Product create failed. Try Again.");
-    }
-  };
-
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData();
-    const file = e.target.files?.[0];
-    if (!file) return;
-    formData.append("image", file);
-    setSelectedImageName(file.name);
-
-    try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-      setImage(res.image);
-      setImageUrl(res.image);
-    } catch (error) {
-      toast.error(error?.data?.message || error.error);
-    }
-  };
+  if (isError) {
+    return <div>Error loading products</div>;
+  }
 
   return (
-    <section className="min-h-screen w-full bg-slate-100 py-6 dark:bg-slate-950">
-      <div className="container px-4 sm:mx-0 sm:px-6 md:px-8 xl:mx-[9rem]">
-      <AdminMenu/>
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-lg md:w-3/4 dark:border-slate-700 dark:bg-slate-900">
-            <div className="h-12 text-2xl font-semibold">Create Product</div>
-
-            {imageUrl && (
-              <div className="text-center">
-                <img
-                  src={imageUrl}
-                  alt="product"
-                  className="mx-auto block max-h-[200px]"
-                />
-              </div>
-            )}
-
-            <div className="mb-6">
-              <label className="block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-11 text-center font-semibold transition hover:scale-101 hover:border-blue-400 hover:bg-white hover:shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:hover:border-amber-400 dark:hover:bg-slate-950">
-                {selectedImageName || (image ? "Change Image" : "Upload Image")}
-                {isUploading && (
-                  <span className="ml-2 text-xs text-slate-500">
-                    Uploading...
-                  </span>
-                )}
-
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={uploadFileHandler}
-                  className="hidden"
-                />
-              </label>
-            </div>
-
-            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800/50">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="text-sm font-medium" htmlFor="name">
-                    Name
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium" htmlFor="price">
-                    Price
-                  </label>
-                  <br />
-                  <input
-                    type="number"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="text-sm font-medium" htmlFor="quantity">
-                    Quantity
-                  </label>
-                  <br />
-                  <input
-                    type="number"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium" htmlFor="brand">
-                    Brand
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <label
-                htmlFor="description"
-                className="my-5 block text-sm font-medium"
-              >
-                Description
-              </label>
-              <textarea
-                type="text"
-                id="description"
-                className="mb-3 w-full resize-none rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="text-sm font-medium" htmlFor="stock">
-                    Count In Stock
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium" htmlFor="category">
-                    Category
-                  </label>
-                  <br />
-                  <select
-                    placeholder="Choose Category"
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    {categories?.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <button
-                onClick={handleSubmit}
-                disabled={isCreating || isUploading}
-                className="mt-6 rounded-xl bg-blue-500 px-10 py-4 text-lg font-semibold text-white transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full dark:bg-amber-600 dark:hover:bg-amber-800 dark:focus:ring-amber-500/50"
-              >
-                {isCreating ? "Submitting..." : "Submit"}
-              </button>
-            </div>
+    <div className="min-h-screen w-full bg-slate-100 py-6 dark:bg-slate-900">
+      <div className="flex flex-col px-4 sm:px-6 md:ml-[10rem] md:flex-row">
+        <AdminMenu />
+        <div className="w-full p-3 md:w-3/4">
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h1 className="text-2xl font-semibold">Products</h1>
+            <p className="text-sm text-gray-500">
+              {products.length} {products.length === 1 ? "item" : "items"}
+            </p>
           </div>
+
+          {products.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-gray-500 dark:border-slate-700">
+              No products found.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+              {products.map((product) => (
+                <article
+                  key={product._id}
+                  className="flex h-full min-w-[280px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
+                >
+                  <div className="h-64 w-full overflow-hidden bg-gray-50 dark:bg-slate-800">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-3 p-6">
+                    <div className="flex items-start justify-between gap-3">
+                      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        {product?.name}
+                      </h2>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {moment(product.createdAt).format("MMM Do, YYYY")}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      {product?.description
+                        ? `${product.description.substring(0, 150)}${
+                            product.description.length > 150 ? "..." : ""
+                          }`
+                        : "No description provided."}
+                    </p>
+
+                    <div className="mt-auto flex items-center justify-between">
+                      <p className="text-base font-semibold text-gray-900 dark:text-amber-400">
+                        ${product?.price}
+                      </p>
+                      <Link
+                        to={`/admin/product/update/${product._id}`}
+                        className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-amber-600 dark:hover:bg-amber-800 dark:focus:ring-amber-500/50"
+                      >
+                        Update Product
+                        <svg
+                          className="ml-2 h-3.5 w-3.5"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
