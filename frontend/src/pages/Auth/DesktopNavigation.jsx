@@ -30,7 +30,7 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
   return (
     <div
       style={{ zIndex: 999 }}
-      className={`${showSidebar ? "lg:hidden" : "lg:flex"} fixed hidden h-screen flex-col justify-between bg-black p-4 text-white hover:w-[15%]`}
+      className={`${showSidebar ? "lg:hidden" : "lg:flex"} fixed top-0 left-0 hidden h-screen max-h-screen flex-col justify-between bg-black p-4 text-white hover:w-[15%] overflow-hidden`}
       id="navigation-container"
     >
       <div className="flex flex-col justify-center space-y-4">

@@ -16,6 +16,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import Login from "./pages/Auth/Login.jsx";
 import Register from "./pages/Auth/Register.jsx";
 import Profile from "./pages/User/Profile.jsx";
+import Favorites from "./pages/Products/Favorites.jsx";
 
 // Admin
 import AdminRoute from "./pages/Admin/AdminRoute.jsx";
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
       {/* Auth Required Routes */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
+      <Route path="/favorite" element={<Favorites />} />
       </Route>
 
       {/* Admin Routes */}
