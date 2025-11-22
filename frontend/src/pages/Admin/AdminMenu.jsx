@@ -50,7 +50,7 @@ const AdminMenu = () => {
                   color: isActive ? "greenyellow" : "white",
                 })}
               >
-                Create Category
+                Manage Categories
               </NavLink>
             </li>
             <li>
