@@ -5,7 +5,65 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {
-  height: 100vh;
+  min-height: 100vh;
+}
+
+/* Improve carousel touch interactions on mobile */
+.slick-slider {
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Larger, more tappable dots on mobile */
+.slick-dots {
+  bottom: -40px !important;
+}
+
+.slick-dots li button {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.slick-dots li button:before {
+  font-size: 12px !important;
+  opacity: 0.5;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+}
+
+@media (min-width: 640px) {
+  .slick-dots {
+    bottom: -35px !important;
+  }
+  
+  .slick-dots li button {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  
+  .slick-dots li button:before {
+    font-size: 10px !important;
+  }
+}
+
+/* Hide scrollbar for horizontal scroll on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Remove default number input spin buttons for consistency */
