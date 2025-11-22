@@ -25,12 +25,12 @@ const Home = () => {
             </h1>
             <Link
               to="/shop"
-              className="rounded-full bg-amber-600 px-6 py-2 text-sm font-bold transition-colors hover:bg-pink-700 sm:px-8 sm:py-3 sm:text-base dark:text-white"
+              className="rounded-full bg-pink-600 text-white dark:bg-amber-600 px-6 py-2 text-sm font-bold transition-colors hover:bg-pink-800 sm:px-8 sm:py-3 sm:text-base dark:text-white"
             >
               Shop
             </Link>
           </div>
-          <div className="m-auto mt-[2rem] flex w-10/12 flex-wrap justify-center max-md:w-[95%]">
+          <div className="container mx-auto mt-[2rem] grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 md:grid-cols-3 md:gap-6 lg:px-8">
             {data.products.map((product) => (
               <div key={product._id}>
                 <Product product={product} />
