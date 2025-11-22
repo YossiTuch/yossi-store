@@ -8,6 +8,7 @@ import { createBrowserRouter } from "react-router";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
 import Home from "./pages/Home.jsx";
+import ProductDetails from "./pages/Products/ProductDetails.jsx";
 
 //Private Route
 import PrivateRoute from "./components/PrivateRoute.jsx";
@@ -32,11 +33,12 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route index={true} path="/" element={<Home />} />
+      <Route path="/product/:id" element={<ProductDetails />} />
 
       {/* Auth Required Routes */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
-      <Route path="/favorite" element={<Favorites />} />
+        <Route path="/favorite" element={<Favorites />} />
       </Route>
 
       {/* Admin Routes */}

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { selectFavoriteProduct } from "../../redux/features/favorites/favoriteSlice";
-import Product from "./Product";
+import SmallProduct from "./SmallProduct";
 
 const Favorites = () => {
   const favorites = useSelector(selectFavoriteProduct);
@@ -8,7 +8,7 @@ const Favorites = () => {
   return (
     <div className="min-h-[calc(100vh-100px)]">
       <div className="container mx-auto mt-8 px-4 pb-8 sm:mt-12 sm:px-6 sm:pb-12 md:mt-16 md:pb-16 lg:px-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl md:text-4xl lg:text-5xl mb-8 sm:mb-10 md:mb-12">
+        <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl mb-8 sm:mb-10 md:mb-12">
           Favorite Products
         </h1>
 
@@ -39,9 +39,7 @@ const Favorites = () => {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:gap-8">
             {favorites.map((product) => (
-              <div key={product._id}>
-                <Product product={product} />
-              </div>
+              <SmallProduct key={product._id} product={product} />
             ))}
           </div>
         )}
