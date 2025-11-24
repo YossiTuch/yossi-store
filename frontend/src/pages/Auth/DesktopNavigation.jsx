@@ -53,26 +53,30 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
           <span className="nav-item-name mt-[3rem] hidden">SHOP</span>
         </Link>
 
-        <Link
-          to="/cart"
-          className="flex transform items-center transition-transform hover:translate-x-2"
-        >
-          <AiOutlineShoppingCart className="mt-[3rem] mr-2" size={26} />
-          <span className="nav-item-name mt-[3rem] hidden">CART</span>
-        </Link>
+        {userInfo && (
+          <>
+            <Link
+              to="/cart"
+              className="flex transform items-center transition-transform hover:translate-x-2"
+            >
+              <AiOutlineShoppingCart className="mt-[3rem] mr-2" size={26} />
+              <span className="nav-item-name mt-[3rem] hidden">CART</span>
+            </Link>
 
-        <Link
-          to="/favorite"
-          className="relative flex transform items-center transition-transform hover:translate-x-2"
-        >
-          <div className="relative mt-[3rem] mr-2">
-            <FaHeart size={26} />
-            <div className="absolute -top-4 -right-2">
-              <FavoritesCount />
-            </div>
-          </div>
-          <span className="nav-item-name mt-[3rem] hidden">Favorites</span>
-        </Link>
+            <Link
+              to="/favorite"
+              className="relative flex transform items-center transition-transform hover:translate-x-2"
+            >
+              <div className="relative mt-[3rem] mr-2">
+                <FaHeart size={26} />
+                <div className="absolute -top-4 -right-2">
+                  <FavoritesCount />
+                </div>
+              </div>
+              <span className="nav-item-name mt-[3rem] hidden">Favorites</span>
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="relative">

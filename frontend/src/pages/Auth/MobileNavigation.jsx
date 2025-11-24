@@ -95,22 +95,26 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
             >
               <AiOutlineShopping size={20} /> <span>Shop</span>
             </Link>
-            <Link
-              to="/cart"
-              onClick={closeMobileMenu}
-              className="flex items-center gap-2 hover:text-amber-400"
-            >
-              <AiOutlineShoppingCart size={20} /> <span>Cart</span>
-            </Link>
-            <Link
-              to="/favorite"
-              onClick={closeMobileMenu}
-              className="flex items-center gap-2 hover:text-amber-400"
-            >
-              <FaHeart size={18} />
-              <span>Favorites</span>
-              <FavoritesCount />
-            </Link>
+            {userInfo && (
+              <>
+                <Link
+                  to="/cart"
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-2 hover:text-amber-400"
+                >
+                  <AiOutlineShoppingCart size={20} /> <span>Cart</span>
+                </Link>
+                <Link
+                  to="/favorite"
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-2 hover:text-amber-400"
+                >
+                  <FaHeart size={18} />
+                  <span>Favorites</span>
+                  <FavoritesCount />
+                </Link>
+              </>
+            )}
             {userInfo ? (
               <>
                 {userInfo.isAdmin && (

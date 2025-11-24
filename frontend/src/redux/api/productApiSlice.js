@@ -8,7 +8,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
         url: `${PRODUCT_URL}`,
         params: { keyword },
       }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 180,
       providesTags: ["Products"],
     }),
 
@@ -27,7 +27,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
       query: (productId) => ({
         url: `${PRODUCT_URL}/${productId}`,
       }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 180,
     }),
 
     createProduct: builder.mutation({
@@ -73,12 +73,12 @@ export const productApiSlice = apiSlice.injectEndpoints({
 
     getTopProducts: builder.query({
       query: () => `${PRODUCT_URL}/top`,
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 180,
     }),
 
     getNewProducts: builder.query({
       query: () => `${PRODUCT_URL}/new`,
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 180,
     }),
 
     getFilteredProducts: builder.query({
