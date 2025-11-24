@@ -7,7 +7,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { DarkThemeToggle } from "flowbite-react";
 import FavoritesCount from "../Products/FavoritesCount";
 
