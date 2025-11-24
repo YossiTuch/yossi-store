@@ -46,7 +46,7 @@ const ProductCarousel = () => {
     <div className="mb-4 w-full px-1 sm:px-2 md:px-4">
       {isLoading ? null : error ? (
         <Message variant="danger">
-          {error?.data?.message || error.error}
+          {error?.data?.message || error?.message || "An error occurred"}
         </Message>
       ) : (
         <div className="mx-auto w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">

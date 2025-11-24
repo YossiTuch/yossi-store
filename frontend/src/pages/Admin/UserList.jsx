@@ -63,7 +63,7 @@ const UserList = () => {
         <Loader />
       ) : error ? (
         <Message variant="danger">
-          {error?.data?.message || error.error}
+          {error?.data?.message || error?.message || "An error occurred"}
         </Message>
       ) : (
         <div className="flex flex-col md:flex-row">

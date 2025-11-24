@@ -17,7 +17,7 @@ const addProduct = asyncHandler(async (req, res) => {
     res.json(product);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -42,7 +42,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     res.json(product);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -52,7 +52,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -80,7 +80,7 @@ const fetchProducts = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -95,7 +95,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(404).json({ error: "Product not found" });
+    res.status(404).json({ message: "Product not found" });
   }
 });
 
@@ -109,7 +109,7 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -151,7 +151,7 @@ const addProductReview = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -161,7 +161,7 @@ const fetchTopProducts = asyncHandler(async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -171,7 +171,7 @@ const fetchNewProducts = asyncHandler(async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -187,7 +187,7 @@ const filterProducts = asyncHandler(async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json({ message: "Server Error" });
   }
 });
 

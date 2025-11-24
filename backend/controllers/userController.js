@@ -20,7 +20,9 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   const userExists = await User.findOne({ email });
-  if (userExists) res.status(400).send("User already exists.");
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists." });
+  }
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -177,7 +179,7 @@ const updateUserById = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User no found.");
+    throw new Error("User not found.");
   }
 });
 
