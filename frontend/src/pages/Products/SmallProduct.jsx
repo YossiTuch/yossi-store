@@ -6,12 +6,16 @@ const SmallProduct = ({ product }) => {
     <div className="group w-full max-w-[20rem] p-1 sm:p-2 md:p-3 xl:p-2">
       <div className="relative h-full overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:bg-slate-900 dark:shadow-slate-800/50">
         <div className="relative aspect-square w-full overflow-hidden bg-gray-50 dark:bg-slate-800">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          <HeartIcon product={product} />
+          <Link to={`/product/${product._id}`} className="block h-full w-full">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </Link>
+          <div onClick={(e) => e.stopPropagation()}>
+            <HeartIcon product={product} />
+          </div>
         </div>
         <div className="p-2 sm:p-3 xl:p-4">
           <Link to={`/product/${product._id}`}>
