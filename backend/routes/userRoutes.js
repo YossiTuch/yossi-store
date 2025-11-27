@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
+  updateFavorites,
   deleteUserById,
   getUserById,
   updateUserById,
@@ -27,6 +28,8 @@ router
   .route("/profile")
   .get(authenticate, getCurrentUserProfile)
   .put(authenticate, updateCurrentUserProfile);
+
+router.put("/favorites", authenticate, updateFavorites);
 
 // ADMIN
 router

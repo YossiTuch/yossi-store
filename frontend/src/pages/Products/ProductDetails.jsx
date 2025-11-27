@@ -61,7 +61,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-100px)] bg-white dark:bg-slate-900">
+    <div className="min-h-[calc(100vh-100px)]">
       <div className="container mx-auto px-3 py-3 sm:px-6 sm:py-6 md:px-8 lg:px-8">
         {/* Go Back Link */}
         <Link
@@ -93,7 +93,7 @@ const ProductDetails = () => {
         ) : (
           <>
             {/* Product Main Section */}
-            <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3 shadow-lg sm:mb-8 sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800 sm:dark:p-8">
+            <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3 shadow-lg sm:mb-8 sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800 dark:p-8">
               <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:gap-8">
                 {/* Product Image */}
                 <div className="relative flex-shrink-0">
@@ -190,11 +190,13 @@ const ProductDetails = () => {
                           onChange={(e) => setQty(Number(e.target.value))}
                           className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 focus:outline-none sm:px-3 sm:py-2 sm:text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
                         >
-                          {[...Array(product.countInStock).keys()].map((x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1}
-                            </option>
-                          ))}
+                          {[...Array(product.countInStock).keys()].map(
+                            (index) => (
+                              <option key={index + 1} value={index + 1}>
+                                {index + 1}
+                              </option>
+                            ),
+                          )}
                         </select>
                       )}
                     </div>

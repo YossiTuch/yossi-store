@@ -18,6 +18,7 @@ import Login from "./pages/Auth/Login.jsx";
 import Register from "./pages/Auth/Register.jsx";
 import Profile from "./pages/User/Profile.jsx";
 import Favorites from "./pages/Products/Favorites.jsx";
+import Cart from "./pages/Cart.jsx";
 
 // Admin
 import AdminRoute from "./pages/Admin/AdminRoute.jsx";
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorite" element={<Favorites />} />
+        <Route path="/cart" element={<Cart />} />
       </Route>
 
       {/* Admin Routes */}

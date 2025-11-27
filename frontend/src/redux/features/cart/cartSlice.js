@@ -11,20 +11,22 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const { user, rating, numReviews, reviews, ...item } = action.payload;
-      const existItem = state.cartItems.find((x) => x._id === item._id);
+      const existItem = state.cartItems.find((cartItem) => cartItem._id === item._id);
 
       if (existItem) {
-        state.cartItems = state.cartItems.map((x) =>
-          x._id === existItem._id ? item : x
+        state.cartItems = state.cartItems.map((cartItem) =>
+          cartItem._id === existItem._id ? { ...cartItem, qty: item.qty } : cartItem,
         );
       } else {
         state.cartItems = [...state.cartItems, item];
       }
-      return updateCart(state, item);
+      return updateCart(state);
     },
 
     removeFromCart: (state, action) => {
-      state.cartItems = state.cartItems.filter((x) => x._id !== action.payload);
+      state.cartItems = state.cartItems.filter(
+        (item) => item._id !== action.payload,
+      );
       return updateCart(state);
     },
 

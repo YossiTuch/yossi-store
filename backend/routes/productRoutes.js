@@ -14,6 +14,7 @@ import {
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,
+  fetchProductsByIds,
 } from "../controllers/productController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 import checkId from "../middlewares/checkId.js";
@@ -36,5 +37,6 @@ router
   .delete(authenticate, authorizeAdmin, deleteProduct);
 
 router.route("/filtered-products").post(filterProducts);
+router.route("/by-ids").post(fetchProductsByIds);
 
 export default router;

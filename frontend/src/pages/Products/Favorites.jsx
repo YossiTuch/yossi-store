@@ -1,9 +1,21 @@
 import { useSelector } from "react-redux";
 import { selectFavoriteProduct } from "../../redux/features/favorites/favoriteSlice";
+import { useGetProductsByIdsQuery } from "../../redux/api/productApiSlice";
 import SmallProduct from "./SmallProduct";
+import Loader from "../../components/Loader";
 
 const Favorites = () => {
-  const favorites = useSelector(selectFavoriteProduct);
+  const favoriteIds = useSelector(selectFavoriteProduct);
+  const { data: favorites, isLoading, error } = useGetProductsByIdsQuery(
+    favoriteIds,
+    { skip: favoriteIds.length === 0 }
+  );
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  const favoriteProducts = favorites || [];
 
   return (
     <div className="min-h-[calc(100vh-100px)]">
@@ -12,7 +24,7 @@ const Favorites = () => {
           Favorite Products
         </h1>
 
-        {favorites.length === 0 ? (
+        {favoriteProducts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 sm:py-20 md:py-24">
             <div className="text-center">
               <svg
@@ -38,7 +50,7 @@ const Favorites = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:gap-8">
-            {favorites.map((product) => (
+            {favoriteProducts.map((product) => (
               <SmallProduct key={product._id} product={product} />
             ))}
           </div>

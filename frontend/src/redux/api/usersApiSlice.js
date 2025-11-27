@@ -57,6 +57,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    updateFavorites: builder.mutation({
+      query: (favorites) => ({
+        url: `${USERS_URL}/favorites`,
+        method: "PUT",
+        body: { favorites },
+      }),
+    }),
   }),
 });
 
@@ -69,4 +76,5 @@ export const {
   useDeleteUserMutation,
   useGetUserDetailsQuery,
   useUpdateUserMutation,
+  useUpdateFavoritesMutation,
 } = userApiSlice;

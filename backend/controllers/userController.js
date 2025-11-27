@@ -32,12 +32,13 @@ const createUser = asyncHandler(async (req, res) => {
   try {
     await newUser.save();
     createToken(res, newUser._id);
-    res.status(201).json({
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      isAdmin: newUser.isAdmin,
-    });
+      res.status(201).json({
+        _id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        isAdmin: newUser.isAdmin,
+        favorites: newUser.favorites || [],
+      });
   } catch (error) {
     res.status(400);
     throw new Error("Invalid user data.");
@@ -73,6 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
+        favorites: existingUser.favorites || [],
       });
       return;
     }
@@ -100,7 +102,12 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    res.json({ _id: user._id, username: user.username, email: user.email });
+    res.json({ 
+      _id: user._id, 
+      username: user.username, 
+      email: user.email,
+      favorites: user.favorites || [],
+    });
   } else {
     res.status(404);
     throw new Error("User not found.");
@@ -127,6 +134,27 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
       username: updatedUser.username,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      favorites: updatedUser.favorites || [],
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+});
+
+const updateFavorites = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.favorites = req.body.favorites || [];
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      favorites: updatedUser.favorites || [],
     });
   } else {
     res.status(404);
@@ -190,6 +218,7 @@ export {
   getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
+  updateFavorites,
   deleteUserById,
   getUserById,
   updateUserById,

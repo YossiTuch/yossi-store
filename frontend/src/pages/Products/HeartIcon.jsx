@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FaHeart, FaRegHeart, FaVaadin } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -7,40 +7,51 @@ import {
   removeFromFavorites,
   setFavorites,
 } from "../../redux/features/favorites/favoriteSlice";
-
-import {
-  addFavoriteToLocalStorage,
-  getFavoritesFromLocalStorage,
-  removeFavoriteFromLocalStorage,
-} from "../../utils/localStorage";
+import { useUpdateFavoritesMutation } from "../../redux/api/usersApiSlice";
+import { setCredentials } from "../../redux/features/auth/authSlice";
 
 const HeartIcon = ({ product }) => {
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites) || [];
   const { userInfo } = useSelector((state) => state.auth);
-  const isFavorite = favorites.some((p) => p._id === product._id);
+  const [updateFavoritesApi] = useUpdateFavoritesMutation();
+  const isFavorite = favorites.includes(product._id);
 
   useEffect(() => {
-    if (userInfo) {
-      const favoritesFromLocalStorage = getFavoritesFromLocalStorage();
-      dispatch(setFavorites(favoritesFromLocalStorage));
+    if (userInfo && userInfo.favorites) {
+      dispatch(setFavorites(userInfo.favorites));
+    } else if (userInfo) {
+      dispatch(setFavorites([]));
     }
   }, [userInfo, dispatch]);
 
-  const toggleFavorites = () => {
+  const toggleFavorites = async () => {
     if (!userInfo) {
       toast.error("Please login to add products to favorites");
       return;
     }
 
-    if (isFavorite) {
-      dispatch(removeFromFavorites(product));
-      // remove the product from the localStorage as well
-      removeFavoriteFromLocalStorage(product._id);
-    } else {
-      dispatch(addToFavorites(product));
-      // add the product to localStorage as well
-      addFavoriteToLocalStorage(product);
+    try {
+      let updatedFavorites;
+      if (isFavorite) {
+        updatedFavorites = favorites.filter((id) => id !== product._id);
+        dispatch(removeFromFavorites(product._id));
+      } else {
+        updatedFavorites = [...favorites, product._id];
+        dispatch(addToFavorites(product._id));
+      }
+
+      // Update favorites on the server
+      const updatedUser = await updateFavoritesApi(updatedFavorites).unwrap();
+      dispatch(setCredentials(updatedUser));
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update favorites");
+      // Revert the local state on error
+      if (isFavorite) {
+        dispatch(addToFavorites(product._id));
+      } else {
+        dispatch(removeFromFavorites(product._id));
+      }
     }
   };
 

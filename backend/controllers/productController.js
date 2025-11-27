@@ -191,6 +191,20 @@ const filterProducts = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchProductsByIds = asyncHandler(async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.json([]);
+    }
+    const products = await Product.find({ _id: { $in: ids } });
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 export {
   addProduct,
   updateProductDetails,
@@ -202,4 +216,5 @@ export {
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,
+  fetchProductsByIds,
 };

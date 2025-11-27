@@ -36,7 +36,7 @@ const Login = () => {
   };
   return (
     <div>
-      <section className="flex flex-wrap pl-0 px-4 md:pl-[10rem] md:px-0 max-sm:text-center">
+      <section className="flex flex-wrap px-4 md:pl-[10rem] md:px-0 max-sm:text-center">
         <div className="mt-8 mr-0 w-full text-center md:mt-[5rem] md:mr-[4rem] md:w-auto">
           <h1 className="mb-4 text-2xl font-semibold">Sign In</h1>
           <form onSubmit={submitHandler} className="container mx-auto w-full max-w-md md:mx-0 md:w-[40rem] md:max-w-none">
