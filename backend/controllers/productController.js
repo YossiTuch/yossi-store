@@ -1,6 +1,7 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
 import productValidation from "../validations/Joi/productValidation.js";
+import { deleteProductImage } from "../utils/imageCleanup.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
@@ -48,8 +49,15 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
-    res.json(product);
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      // Delete associated image if no other products use it
+      await deleteProductImage(product.image);
+      await Product.findByIdAndDelete(req.params.id);
+      res.json({ message: "Product deleted successfully", product });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

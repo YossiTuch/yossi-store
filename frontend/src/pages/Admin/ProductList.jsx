@@ -2,9 +2,14 @@ import { Link } from "react-router";
 import moment from "moment";
 import { useAllProductsQuery } from "../../redux/api/productApiSlice";
 import AdminMenu from "./AdminMenu";
+import { useEffect } from "react";
 
 const ProductList = () => {
-  const { data: products, isLoading, isError } = useAllProductsQuery();
+  const { data: products, isLoading, isError, refetch } = useAllProductsQuery();
+ 
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -41,6 +46,7 @@ const ProductList = () => {
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
                       className="h-full w-full object-cover"
                     />
                   </div>

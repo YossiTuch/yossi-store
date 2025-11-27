@@ -7,10 +7,10 @@ import flowbiteReact from "flowbite-react/plugin/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss(), flowbiteReact()],
   server: {
-    host: true,
     proxy: {
-      "/api/": "http://localhost:5000",
-      "/uploads/": "http://localhost:5000",
+      "/api/": { target: "http://localhost:5000", changeOrigin: true },
+      "/uploads/": { target: "http://localhost:5000", changeOrigin: true },
+      "/images/": { target: "http://localhost:5000", changeOrigin: true },
     },
   },
 });

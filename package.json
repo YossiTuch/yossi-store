@@ -7,7 +7,9 @@
   "scripts": {
     "backend": "nodemon backend/index.js",
     "frontend": "npm run dev --prefix frontend",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "seed": "node backend/data/seeder.js --import",
+    "cleanup:images": "node -e \"import('./backend/utils/imageCleanup.js').then(m => m.cleanupUnusedImages().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); }))\""
   },
   "keywords": [],
   "author": "",

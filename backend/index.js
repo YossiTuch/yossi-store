@@ -14,8 +14,6 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 dotenv.config();
 const port = process.env.PORT || 5000;
 
-connectDB();
-
 const app = express();
 
 app.use(logger);
@@ -29,6 +27,29 @@ app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 
 const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
 
-app.listen(port, () => console.log(`Server running on port: ${port}`));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+// Initialize database (categories and products) on startup
+const initializeDatabase = async () => {
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const { initialize } = await import("./data/init.js");
+      await initialize();
+    } catch (error) {
+      console.warn("⚠️  Database initialization failed:", error.message);
+    }
+  }
+};
+
+// Connect to database and then initialize if needed
+const startServer = async () => {
+  await connectDB();
+  await initializeDatabase();
+
+  app.listen(port, () => console.log(`Server running on port: ${port}`));
+};
+
+startServer();
