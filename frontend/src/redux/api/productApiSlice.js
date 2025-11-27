@@ -22,6 +22,13 @@ export const productApiSlice = apiSlice.injectEndpoints({
     allProducts: builder.query({
       query: () => `${PRODUCT_URL}/allProducts`,
       providesTags: ["Product"],
+      keepUnusedDataFor: 180,
+    }),
+
+    getAllProductsForShop: builder.query({
+      query: () => `${PRODUCT_URL}/allProducts`,
+      keepUnusedDataFor: 180,
+      providesTags: ["Product"],
     }),
 
     getProductDetails: builder.query({
@@ -91,6 +98,13 @@ export const productApiSlice = apiSlice.injectEndpoints({
         body: { checked, radio },
       }),
       keepUnusedDataFor: 180,
+      serializeQueryArgs: ({ endpointName, queryArgs }) => {
+        const { checked, radio } = queryArgs;
+        return `${endpointName}(${JSON.stringify({ 
+          checked: checked.sort(), 
+          radio 
+        })})`;
+      },
     }),
 
     getProductsByIds: builder.query({
@@ -109,6 +123,7 @@ export const {
   useGetProductsQuery,
   useGetProductDetailsQuery,
   useAllProductsQuery,
+  useGetAllProductsForShopQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

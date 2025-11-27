@@ -1,6 +1,7 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
+import { skipToken } from "@reduxjs/toolkit/query/react";
+import { useGetFilteredProductsQuery, useGetAllProductsForShopQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
 
 import {
@@ -22,71 +23,80 @@ const Shop = () => {
   const categoriesQuery = useFetchCategoriesQuery();
   const [priceFilter, setPriceFilter] = useState("");
   const debouncedPriceFilter = useDebouncedValue(priceFilter, 300);
+  const lastDispatchedRef = useRef("");
 
-  const filteredProductsQuery = useGetFilteredProductsQuery({
-    checked,
-    radio,
-  });
+  const hasFilters = checked.length > 0 || radio.length > 0;
 
-  // Memoize unique brands to avoid recalculating on every render
+  const allProductsQuery = useGetAllProductsForShopQuery();
+  const filteredProductsQuery = useGetFilteredProductsQuery(
+    hasFilters ? { checked, radio } : skipToken
+  );
+
+  const productsData = useMemo(() => {
+    if (hasFilters) {
+      if (!filteredProductsQuery.data) return [];
+      return filteredProductsQuery.data.products || [];
+    } else {
+      if (!allProductsQuery.data) return [];
+      return Array.isArray(allProductsQuery.data) ? allProductsQuery.data : [];
+    }
+  }, [hasFilters, filteredProductsQuery.data, allProductsQuery.data]);
+
   const uniqueBrands = useMemo(() => {
-    if (!filteredProductsQuery.data) return [];
+    if (!productsData.length) return [];
     return Array.from(
       new Set(
-        filteredProductsQuery.data
+        productsData
           .map((product) => product.brand)
           .filter((brand) => brand !== undefined)
       )
     );
-  }, [filteredProductsQuery.data]);
+  }, [productsData]);
 
-  // Set categories when data is loaded
   useEffect(() => {
     if (!categoriesQuery.isLoading && categoriesQuery.data) {
       dispatch(setCategories(categoriesQuery.data));
     }
   }, [categoriesQuery.data, categoriesQuery.isLoading, dispatch]);
 
-  // Filter products based on price filter (debounced)
   useEffect(() => {
-    if (!filteredProductsQuery.data) return;
-
-    if (!checked.length && !radio.length) {
-      // Apply price filter to all products
-      const filteredProducts = debouncedPriceFilter
-        ? filteredProductsQuery.data.filter((product) => {
-            const priceStr = product.price?.toString() || "";
-            const filterNum = parseInt(debouncedPriceFilter, 10);
-            return (
-              priceStr.includes(debouncedPriceFilter) ||
-              product.price === filterNum
-            );
-          })
-        : filteredProductsQuery.data;
-
-      dispatch(setProducts(filteredProducts));
-    } else {
-      // If filters are active, use the filtered query results
-      dispatch(setProducts(filteredProductsQuery.data || []));
+    if (!productsData.length) {
+      const emptyKey = "empty";
+      if (lastDispatchedRef.current !== emptyKey) {
+        dispatch(setProducts([]));
+        lastDispatchedRef.current = emptyKey;
+      }
+      return;
     }
-  }, [
-    checked,
-    radio,
-    filteredProductsQuery.data,
-    dispatch,
-    debouncedPriceFilter,
-  ]);
+
+    let filtered = productsData;
+
+    if (debouncedPriceFilter) {
+      filtered = filtered.filter((product) => {
+        const priceStr = product.price?.toString() || "";
+        const filterNum = parseInt(debouncedPriceFilter, 10);
+        return priceStr.includes(debouncedPriceFilter) || product.price === filterNum;
+      });
+    }
+
+    const newKey = filtered.map(p => p._id).sort().join(',');
+    
+    if (lastDispatchedRef.current !== newKey) {
+      dispatch(setProducts(filtered));
+      lastDispatchedRef.current = newKey;
+    }
+  }, [hasFilters, productsData, debouncedPriceFilter, dispatch]);
 
   // Memoize handlers to prevent unnecessary re-renders
   const handleBrandClick = useCallback(
     (brand) => {
-      if (!filteredProductsQuery.data) return;
-      const productsByBrand = filteredProductsQuery.data.filter(
+      if (!productsData.length) return;
+      const productsByBrand = productsData.filter(
         (product) => product.brand === brand
       );
       dispatch(setProducts(productsByBrand));
     },
-    [filteredProductsQuery.data, dispatch]
+    [productsData, dispatch]
   );
 
   const handleCheck = useCallback(
@@ -107,10 +117,10 @@ const Shop = () => {
     dispatch(setChecked([]));
     dispatch(setRadio([]));
     setPriceFilter("");
-    if (filteredProductsQuery.data) {
-      dispatch(setProducts(filteredProductsQuery.data));
+    if (productsData.length) {
+      dispatch(setProducts(productsData));
     }
-  }, [dispatch, filteredProductsQuery.data]);
+  }, [dispatch, productsData]);
 
   return (
     <div className="min-h-[calc(100vh-100px)] bg-slate-50 dark:bg-slate-900">
@@ -214,7 +224,7 @@ const Shop = () => {
                 <div className="text-center">
                   <Loader />
                   <p className="mt-4 text-gray-500 dark:text-gray-400">
-                    {filteredProductsQuery.isLoading
+                    {(hasFilters ? filteredProductsQuery.isLoading : allProductsQuery.isLoading)
                       ? "Loading products..."
                       : "No products found"}
                   </p>
@@ -234,4 +244,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default React.memo(Shop);

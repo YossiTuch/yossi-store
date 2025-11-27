@@ -78,7 +78,10 @@ const fetchProducts = asyncHandler(async (req, res) => {
       : {};
 
     const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword }).limit(pageSize);
+    const products = await Product.find({ ...keyword })
+      .select("name image brand price description category rating numReviews")
+      .limit(pageSize)
+      .lean();
 
     res.json({
       products,
@@ -110,9 +113,11 @@ const fetchProductById = asyncHandler(async (req, res) => {
 const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({})
-      .populate("category")
+      .select("name image brand price description category rating numReviews")
+      .populate("category", "name")
       .limit(12)
-      .sort({ createAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.json(products);
   } catch (error) {
@@ -165,7 +170,11 @@ const addProductReview = asyncHandler(async (req, res) => {
 
 const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ rating: -1 }).limit(4);
+    const products = await Product.find({})
+      .select("name image brand price description category rating numReviews")
+      .sort({ rating: -1 })
+      .limit(4)
+      .lean();
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -175,7 +184,11 @@ const fetchTopProducts = asyncHandler(async (req, res) => {
 
 const fetchNewProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().sort({ _id: -1 }).limit(5);
+    const products = await Product.find()
+      .select("name image brand price description category rating numReviews")
+      .sort({ _id: -1 })
+      .limit(5)
+      .lean();
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -185,14 +198,28 @@ const fetchNewProducts = asyncHandler(async (req, res) => {
 
 const filterProducts = asyncHandler(async (req, res) => {
   try {
-    const { checked, radio } = req.body;
+    const { checked, radio, page = 1, limit = 50 } = req.body;
+    const skip = (page - 1) * limit;
 
     let args = {};
     if (checked.length > 0) args.category = checked;
     if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
 
-    const products = await Product.find(args);
-    res.json(products);
+    const [products, total] = await Promise.all([
+      Product.find(args)
+        .select("name image brand price description category rating numReviews")
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Product.countDocuments(args),
+    ]);
+
+    res.json({
+      products,
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -205,7 +232,9 @@ const fetchProductsByIds = asyncHandler(async (req, res) => {
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       return res.json([]);
     }
-    const products = await Product.find({ _id: { $in: ids } });
+    const products = await Product.find({ _id: { $in: ids } })
+      .select("name image brand price description category rating numReviews")
+      .lean();
     res.json(products);
   } catch (error) {
     console.error(error);

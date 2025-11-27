@@ -3,6 +3,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import logger from "./logger/loggerService.js";
 // Utils
 import connectDB from "./config/db.js";
@@ -16,6 +17,7 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
+app.use(compression());
 app.use(logger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,9 +30,28 @@ app.use("/api/upload", uploadRoutes);
 
 const __dirname = path.resolve();
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/products") && req.method === "GET") {
+    res.set("Cache-Control", "public, max-age=300");
+  }
+  next();
+});
 
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    maxAge: "1y",
+    etag: true,
+  })
+);
+
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "images"), {
+    maxAge: "1y",
+    etag: true,
+  })
+);
 
 // Initialize database (categories and products) on startup
 const initializeDatabase = async () => {
