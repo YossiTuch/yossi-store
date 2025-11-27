@@ -63,7 +63,6 @@ const ProductDetails = () => {
   return (
     <div className="min-h-[calc(100vh-100px)]">
       <div className="container mx-auto px-3 py-3 sm:px-6 sm:py-6 md:px-8 lg:px-8">
-        {/* Go Back Link */}
         <Link
           to="/"
           className="mb-3 inline-flex items-center text-xs font-medium text-gray-700 transition-colors hover:text-pink-600 sm:mb-6 sm:text-sm dark:text-gray-300 dark:hover:text-amber-400"
@@ -92,10 +91,8 @@ const ProductDetails = () => {
           </Message>
         ) : (
           <>
-            {/* Product Main Section */}
             <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3 shadow-lg sm:mb-8 sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800 dark:p-8">
               <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:gap-8">
-                {/* Product Image */}
                 <div className="relative flex-shrink-0">
                   <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-100 sm:w-[400px] sm:rounded-xl lg:w-[500px] dark:bg-slate-900">
                     <img
@@ -109,7 +106,6 @@ const ProductDetails = () => {
                   </div>
                 </div>
 
-                {/* Product Info */}
                 <div className="flex flex-1 flex-col justify-between">
                   <div>
                     <h1 className="mb-2 text-xl font-bold text-gray-900 sm:mb-4 sm:text-3xl dark:text-white sm:dark:text-4xl">
@@ -124,7 +120,6 @@ const ProductDetails = () => {
                       ${product.price}
                     </div>
 
-                    {/* Product Details Grid */}
                     <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-4">
                       <div className="flex items-center gap-2 rounded-lg bg-slate-50 p-2 sm:gap-3 sm:p-3 dark:bg-slate-900/50">
                         <FaStore className="flex-shrink-0 text-sm text-pink-600 sm:text-base dark:text-amber-400" />
@@ -178,7 +173,6 @@ const ProductDetails = () => {
                     </div>
                   </div>
 
-                  {/* Add to Cart Section */}
                   <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:mt-6 sm:rounded-xl sm:p-4 dark:border-slate-700 dark:bg-slate-900/50">
                     <div className="mb-3 flex items-center justify-between sm:mb-4">
                       <label className="text-xs font-medium text-gray-700 sm:text-sm dark:text-gray-300">
@@ -215,7 +209,6 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Product Tabs Section */}
             <div className="rounded-xl border border-slate-200 bg-white shadow-lg sm:rounded-2xl dark:border-slate-700 dark:bg-slate-800">
               <ProductTabs
                 loadingProductReview={loadingProductReview}

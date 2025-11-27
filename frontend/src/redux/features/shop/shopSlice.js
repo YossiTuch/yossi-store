@@ -5,8 +5,7 @@ const initialState = {
   products: [],
   checked: [],
   radio: [],
-  brandCheckboxes: {},
-  checkedBrands: [],
+  selectedBrand: null,
 };
 
 const shopSlice = createSlice({

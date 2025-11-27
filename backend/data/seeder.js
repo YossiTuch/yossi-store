@@ -4,9 +4,6 @@ import { initialize } from "./init.js";
 
 dotenv.config();
 
-/**
- * Standalone seeder script - can be run manually with npm run seed
- */
 const seedDatabase = async () => {
   try {
     await connectDB();
@@ -19,7 +16,6 @@ const seedDatabase = async () => {
   }
 };
 
-// Run seeder if called directly with --import flag
 if (process.argv[2] === "--import") {
   seedDatabase();
 }

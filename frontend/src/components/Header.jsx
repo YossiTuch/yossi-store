@@ -15,9 +15,7 @@ const Header = () => {
   return (
     <div className="container mx-auto min-h-[calc(100vh-200px)] px-2 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
       <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:justify-around xl:gap-8">
-        {/* SmallProduct Grid - Visible on all screens, different layouts */}
         <div className="w-full xl:flex-1 xl:max-w-md">
-          {/* Mobile: Horizontal scrollable row */}
           <div className="xl:hidden">
             <h2 className="mb-3 text-lg font-bold sm:text-xl md:text-2xl">
               Featured Products
@@ -30,7 +28,6 @@ const Header = () => {
               ))}
             </div>
           </div>
-          {/* Desktop (xl): Grid layout */}
           <div className="hidden xl:block">
             <div className="grid grid-cols-2 gap-4">
               {data.map((product) => (
@@ -41,7 +38,6 @@ const Header = () => {
             </div>
           </div>
         </div>
-        {/* Product Carousel */}
         <div className="w-full xl:flex-1 xl:max-w-5xl">
           <ProductCarousel />
         </div>

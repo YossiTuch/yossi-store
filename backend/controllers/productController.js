@@ -51,7 +51,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
-      // Delete associated image if no other products use it
       await deleteProductImage(product.image);
       await Product.findByIdAndDelete(req.params.id);
       res.json({ message: "Product deleted successfully", product });

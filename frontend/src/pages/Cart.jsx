@@ -30,7 +30,6 @@ const Cart = () => {
   return (
     <div className="min-h-[calc(100vh-100px)] bg-white dark:bg-slate-900">
       <div className="container mx-auto px-3 py-3 sm:px-6 sm:py-6 md:px-8 lg:px-8">
-        {/* Go Back Link */}
         <Link
           to="/shop"
           className="mb-3 inline-flex items-center text-xs font-medium text-gray-700 transition-colors hover:text-pink-600 sm:mb-6 sm:text-sm dark:text-gray-300 dark:hover:text-amber-400"
@@ -71,7 +70,6 @@ const Cart = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            {/* Cart Items Section */}
             <div className="flex-1 space-y-4">
               {cartItems.map((item) => (
                 <div
@@ -79,7 +77,6 @@ const Cart = () => {
                   className="rounded-xl border border-slate-200 bg-white p-3 shadow-md transition-shadow hover:shadow-lg sm:rounded-2xl sm:p-4 dark:border-slate-700 dark:bg-slate-800"
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    {/* Product Image */}
                     <div className="flex-shrink-0">
                       <Link to={`/product/${item._id}`}>
                         <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-100 sm:w-24 sm:rounded-xl dark:bg-slate-900">
@@ -92,7 +89,6 @@ const Cart = () => {
                       </Link>
                     </div>
 
-                    {/* Product Info */}
                     <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex-1">
                         <Link
@@ -109,7 +105,6 @@ const Cart = () => {
                         </p>
                       </div>
 
-                      {/* Quantity Selector */}
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
                           <label className="text-xs font-medium text-gray-700 sm:text-sm dark:text-gray-300">
@@ -132,7 +127,6 @@ const Cart = () => {
                           </select>
                         </div>
 
-                        {/* Remove Button */}
                         <button
                           className="flex items-center justify-center rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 dark:hover:bg-red-900/20 dark:focus:ring-red-500/50"
                           onClick={() => removeFromCartHandler(item._id)}
@@ -147,7 +141,6 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* Order Summary Section */}
             <div className="lg:w-80">
               <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-4 shadow-lg sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                 <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">

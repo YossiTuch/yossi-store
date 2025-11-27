@@ -100,9 +100,11 @@ export const productApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 180,
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
         const { checked, radio } = queryArgs;
+        const sortedChecked = Array.isArray(checked) ? [...checked].sort() : [];
+        const safeRadio = Array.isArray(radio) ? radio : [];
         return `${endpointName}(${JSON.stringify({ 
-          checked: checked.sort(), 
-          radio 
+          checked: sortedChecked, 
+          radio: safeRadio
         })})`;
       },
     }),

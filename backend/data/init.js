@@ -4,7 +4,6 @@ import Product from "../models/productModel.js";
 
 dotenv.config();
 
-// Default categories to create if they don't exist
 const defaultCategories = [
   "Electronics",
   "Clothing",
@@ -14,7 +13,6 @@ const defaultCategories = [
   "Toys & Games",
 ];
 
-// Sample products organized by category
 const sampleProducts = {
   Electronics: [
     {
@@ -162,9 +160,6 @@ const sampleProducts = {
   ],
 };
 
-/**
- * Initialize categories - creates default categories if they don't exist
- */
 const initCategories = async () => {
   try {
     const existingCategories = await Category.find();
@@ -189,7 +184,6 @@ const initCategories = async () => {
       }: ${categoriesToCreate.join(", ")}`
     );
 
-    // Return all categories (existing + newly created)
     return await Category.find();
   } catch (error) {
     console.error("❌ Error initializing categories:", error);
@@ -197,9 +191,6 @@ const initCategories = async () => {
   }
 };
 
-/**
- * Initialize products - creates sample products under their respective categories
- */
 const initProducts = async () => {
   try {
     const existingProductCount = await Product.countDocuments();
@@ -210,7 +201,6 @@ const initProducts = async () => {
       return;
     }
 
-    // Get all categories
     const categories = await Category.find();
     if (categories.length === 0) {
       console.log(
@@ -219,13 +209,11 @@ const initProducts = async () => {
       return;
     }
 
-    // Create a map of category names to category IDs
     const categoryMap = {};
     categories.forEach(cat => {
       categoryMap[cat.name] = cat._id;
     });
 
-    // Prepare products with their category IDs
     const productsToInsert = [];
     let totalProducts = 0;
 
@@ -273,23 +261,17 @@ const initProducts = async () => {
   }
 };
 
-/**
- * Main initialization function - runs on server startup
- */
 const initialize = async () => {
   try {
     console.log("🚀 Starting database initialization...");
 
-    // First, ensure categories exist
     await initCategories();
 
-    // Then, create products if database is empty
     await initProducts();
 
     console.log("✅ Database initialization complete!");
   } catch (error) {
     console.error("❌ Database initialization failed:", error);
-    // Don't throw - allow server to start even if initialization fails
   }
 };
 

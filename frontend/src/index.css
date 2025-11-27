@@ -16,7 +16,7 @@ body {
 }
 
 html.dark body {
-  background-color: rgb(15 23 42); /* slate-900 */
+  background-color: rgb(15 23 42);
 }
 
 #root {
@@ -26,10 +26,9 @@ html.dark body {
 }
 
 html.dark #root {
-  background-color: rgb(15 23 42); /* slate-900 */
+  background-color: rgb(15 23 42);
 }
 
-/* Improve carousel touch interactions on mobile */
 .slick-slider {
   touch-action: pan-y;
   -webkit-touch-callout: none;
@@ -43,7 +42,6 @@ html.dark #root {
   transform: translate3d(0, 0, 0);
 }
 
-/* Larger, more tappable dots on mobile */
 .slick-dots {
   bottom: -40px !important;
 }
@@ -77,7 +75,6 @@ html.dark #root {
   }
 }
 
-/* Hide scrollbar for horizontal scroll on mobile */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -87,7 +84,6 @@ html.dark #root {
   display: none;
 }
 
-/* Remove default number input spin buttons for consistency */
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;

@@ -23,7 +23,6 @@ const ProductCard = ({ p }) => {
   return (
     <div className="group h-full">
       <div className="relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-pink-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:border-amber-500/50">
-        {/* Image Section */}
         <div className="relative aspect-square w-full overflow-hidden bg-gray-50 dark:bg-slate-900">
           <Link to={`/product/${p._id}`} className="block h-full w-full">
             <img
@@ -33,13 +32,11 @@ const ProductCard = ({ p }) => {
               className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
             />
           </Link>
-          {/* Brand Badge */}
           {p?.brand && (
             <span className="absolute bottom-3 right-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-pink-800 shadow-md backdrop-blur-sm dark:bg-slate-800/90 dark:text-amber-400">
               {p.brand}
             </span>
           )}
-          {/* Heart Icon */}
           <div
             className="absolute top-3 right-3"
             onClick={(e) => e.stopPropagation()}
@@ -48,7 +45,6 @@ const ProductCard = ({ p }) => {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           <Link to={`/product/${p._id}`}>
             <h2 className="mb-2 flex items-start justify-between gap-2">
@@ -58,14 +54,12 @@ const ProductCard = ({ p }) => {
             </h2>
           </Link>
 
-          {/* Description */}
           {p?.description && (
             <p className="mb-3 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
               {p.description}
             </p>
           )}
 
-          {/* Price and Actions */}
           <div className="mt-auto flex items-center justify-between gap-3">
             <span className="rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-800 shadow-sm dark:bg-amber-900 dark:text-white">
               {p?.price?.toLocaleString("en-US", {

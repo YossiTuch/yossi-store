@@ -4,10 +4,8 @@ import Product from "../models/productModel.js";
 
 const uploadsDir = path.join(process.cwd(), "uploads");
 
-// Clean up images not referenced by any product
 export const cleanupUnusedImages = async () => {
   try {
-    // Get all products and their image paths
     const products = await Product.find({}, "image");
     const usedImages = new Set(
       products
@@ -16,10 +14,8 @@ export const cleanupUnusedImages = async () => {
         .map((img) => path.basename(img))
     );
 
-    // Get all files in uploads directory
     const files = await fs.readdir(uploadsDir);
 
-    // Delete files not in use
     let deletedCount = 0;
     for (const file of files) {
       if (!usedImages.has(file)) {
@@ -32,7 +28,6 @@ export const cleanupUnusedImages = async () => {
             console.log(`Deleted unused image: ${file}`);
           }
         } catch (err) {
-          // Skip if file doesn't exist or can't be deleted
           console.warn(`Could not delete ${file}:`, err.message);
         }
       }
@@ -46,14 +41,12 @@ export const cleanupUnusedImages = async () => {
   }
 };
 
-// Clean up image when product is deleted
 export const deleteProductImage = async (imagePath) => {
   try {
     if (imagePath && imagePath.startsWith("/uploads/")) {
       const filename = path.basename(imagePath);
       const filePath = path.join(uploadsDir, filename);
 
-      // Check if other products use this image
       const otherProducts = await Product.find({ image: imagePath });
 
       if (otherProducts.length === 0) {
@@ -61,7 +54,6 @@ export const deleteProductImage = async (imagePath) => {
           await fs.unlink(filePath);
           console.log(`Deleted image: ${filename}`);
         } catch (err) {
-          // File might not exist, that's okay
           console.warn(`Could not delete image ${filename}:`, err.message);
         }
       } else {

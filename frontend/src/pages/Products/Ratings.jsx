@@ -8,7 +8,6 @@ const Ratings = ({ value = 0, text }) => {
 
   return (
     <div className="flex items-center gap-0.5 sm:gap-1">
-      {/* Full stars */}
       {[...Array(fullStars)].map((_, index) => (
         <FaStar
           key={`full-${index}`}
@@ -16,7 +15,6 @@ const Ratings = ({ value = 0, text }) => {
         />
       ))}
 
-      {/* Half star */}
       {hasHalfStar && (
         <FaStarHalfAlt
           key="half"
@@ -24,7 +22,6 @@ const Ratings = ({ value = 0, text }) => {
         />
       )}
 
-      {/* Empty stars */}
       {[...Array(emptyStars)].map((_, index) => (
         <FaRegStar
           key={`empty-${index}`}
@@ -32,7 +29,6 @@ const Ratings = ({ value = 0, text }) => {
         />
       ))}
 
-      {/* Review count text */}
       {text && (
         <span className="ml-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 sm:ml-2 sm:text-sm">
           {text}

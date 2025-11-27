@@ -41,12 +41,10 @@ const HeartIcon = ({ product }) => {
         dispatch(addToFavorites(product._id));
       }
 
-      // Update favorites on the server
       const updatedUser = await updateFavoritesApi(updatedFavorites).unwrap();
       dispatch(setCredentials(updatedUser));
     } catch (error) {
       toast.error(error?.data?.message || "Failed to update favorites");
-      // Revert the local state on error
       if (isFavorite) {
         dispatch(addToFavorites(product._id));
       } else {
@@ -55,7 +53,6 @@ const HeartIcon = ({ product }) => {
     }
   };
 
-  // Don't render the heart icon if user is not logged in
   if (!userInfo) {
     return null;
   }

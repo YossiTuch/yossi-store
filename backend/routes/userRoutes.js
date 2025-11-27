@@ -31,7 +31,6 @@ router
 
 router.put("/favorites", authenticate, updateFavorites);
 
-// ADMIN
 router
   .route("/:id")
   .delete(authenticate, authorizeAdmin, deleteUserById)

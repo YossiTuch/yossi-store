@@ -10,7 +10,9 @@ import store from "./redux/store.js";
 import Loader from "./components/Loader.jsx";
 
 const Home = lazy(() => import("./pages/Home.jsx"));
-const ProductDetails = lazy(() => import("./pages/Products/ProductDetails.jsx"));
+const ProductDetails = lazy(
+  () => import("./pages/Products/ProductDetails.jsx"),
+);
 const Shop = lazy(() => import("./pages/Shop.jsx"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute.jsx"));
 const Login = lazy(() => import("./pages/Auth/Login.jsx"));
@@ -34,14 +36,12 @@ const router = createBrowserRouter(
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/shop" element={<Shop />} />
 
-      {/* Auth Required Routes */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorite" element={<Favorites />} />
         <Route path="/cart" element={<Cart />} />
       </Route>
 
-      {/* Admin Routes */}
       <Route path="/admin" element={<AdminRoute />}>
         <Route path="userlist" element={<UserList />} />
         <Route path="categorylist" element={<CategoryList />} />

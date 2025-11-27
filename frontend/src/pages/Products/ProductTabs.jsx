@@ -17,7 +17,6 @@ const ProductTabs = ({
 }) => {
   const [activeTab, setActiveTab] = useState(1);
 
-  // Only fetch related products when tab 3 is active
   const { data, isLoading } = useGetTopProductsQuery(undefined, {
     skip: activeTab !== 3,
     refetchOnMountOrArgChange: false,
@@ -29,7 +28,6 @@ const ProductTabs = ({
 
   return (
     <div className="w-full">
-      {/* Tabs Navigation */}
       <div className="border-b border-slate-200 dark:border-slate-700">
         <div className="flex flex-wrap gap-1 px-2 sm:gap-2 sm:px-4 md:px-6 lg:px-8">
           <button

@@ -1,11 +1,9 @@
-// Packages
 import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import logger from "./logger/loggerService.js";
-// Utils
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -53,7 +51,6 @@ app.use(
   })
 );
 
-// Initialize database (categories and products) on startup
 const initializeDatabase = async () => {
   if (process.env.NODE_ENV !== "production") {
     try {
@@ -65,7 +62,6 @@ const initializeDatabase = async () => {
   }
 };
 
-// Connect to database and then initialize if needed
 const startServer = async () => {
   await connectDB();
   await initializeDatabase();
