@@ -70,17 +70,11 @@ const AdminProductUpdate = () => {
     setSelectedImageName(file.name);
     try {
       const res = await uploadProductImage(formData).unwrap();
-      toast.success("Image uploaded successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.success("Image uploaded successfully");
       setImage(res.image);
       setImagePreview(res.image);
     } catch (err) {
-      toast.error("Image upload failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.error("Image upload failed. Try again.");
     }
   };
 

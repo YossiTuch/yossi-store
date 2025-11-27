@@ -100,17 +100,63 @@ const Shop = () => {
     }
 
     if (debouncedPriceFilter) {
-      const filterNum = parseFloat(debouncedPriceFilter);
-      const isValidNumber = !isNaN(filterNum) && isFinite(filterNum);
+      // Check if input is a range (e.g., "10-50", "10 to 50", "10 - 50")
+      const rangeMatch = debouncedPriceFilter.match(
+        /^(\d+(?:\.\d+)?)\s*(?:-|to)\s*(\d+(?:\.\d+)?)$/i,
+      );
 
-      filtered = filtered.filter((product) => {
-        if (!product.price) return false;
-        if (isValidNumber) {
-          return product.price === filterNum;
+      if (rangeMatch) {
+        // Range search: filter products between min and max price
+        const minPrice = parseFloat(rangeMatch[1]);
+        const maxPrice = parseFloat(rangeMatch[2]);
+
+        if (
+          !isNaN(minPrice) &&
+          !isNaN(maxPrice) &&
+          isFinite(minPrice) &&
+          isFinite(maxPrice)
+        ) {
+          const actualMin = Math.min(minPrice, maxPrice);
+          const actualMax = Math.max(minPrice, maxPrice);
+
+          filtered = filtered.filter((product) => {
+            if (!product.price) return false;
+            const productPrice = parseFloat(product.price);
+            return (
+              !isNaN(productPrice) &&
+              productPrice >= actualMin &&
+              productPrice <= actualMax
+            );
+          });
         }
-        const priceStr = product.price.toString();
-        return priceStr.includes(debouncedPriceFilter);
-      });
+      } else {
+        // Single price: search around the price (±10% or minimum ±$5, whichever is larger)
+        const filterNum = parseFloat(debouncedPriceFilter);
+        const isValidNumber = !isNaN(filterNum) && isFinite(filterNum);
+
+        if (isValidNumber && filterNum > 0) {
+          const tolerance = Math.max(filterNum * 0.1, 5); // 10% or $5, whichever is larger
+          const minPrice = filterNum - tolerance;
+          const maxPrice = filterNum + tolerance;
+
+          filtered = filtered.filter((product) => {
+            if (!product.price) return false;
+            const productPrice = parseFloat(product.price);
+            return (
+              !isNaN(productPrice) &&
+              productPrice >= minPrice &&
+              productPrice <= maxPrice
+            );
+          });
+        } else {
+          // Fallback: string search if not a valid number
+          filtered = filtered.filter((product) => {
+            if (!product.price) return false;
+            const priceStr = product.price.toString();
+            return priceStr.includes(debouncedPriceFilter);
+          });
+        }
+      }
     }
 
     const newKey = filtered
@@ -287,7 +333,7 @@ const Shop = () => {
                   </h3>
                   <input
                     type="text"
-                    placeholder="Enter price..."
+                    placeholder="Single price (50), or a range (10-100)"
                     value={priceFilter}
                     onChange={handlePriceChange}
                     className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm placeholder-gray-400 transition-colors focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
