@@ -9,6 +9,8 @@ import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import orderRoutes from "./routes/OrderRoutes.js";
+import productCacheMiddleware from "./middlewares/cacheMiddleware.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -17,6 +19,7 @@ const app = express();
 
 app.use(compression());
 app.use(logger);
+app.use(productCacheMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -25,15 +28,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/orders", orderRoutes);
 
 const __dirname = path.resolve();
-
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api/products") && req.method === "GET") {
-    res.set("Cache-Control", "public, max-age=300");
-  }
-  next();
-});
 
 app.use(
   "/uploads",

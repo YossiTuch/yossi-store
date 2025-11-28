@@ -1,11 +1,5 @@
-import express from "express";
-const app = express();
 import morganLogger from "./loggers/morganLogger.js";
 
-const LOGGER = "morgan";
+const logger = morganLogger;
 
-if (LOGGER === "morgan") {
-  app.use(morganLogger);
-}
-
-export default app;
+export default logger;
