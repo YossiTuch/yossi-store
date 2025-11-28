@@ -10,16 +10,18 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/OrderRoutes.js";
-import productCacheMiddleware from "./middlewares/cacheMiddleware.js";
+import cacheMiddleware from "./middlewares/cacheMiddleware.js";
+import limiter from "./middlewares/rateLimiter.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
 
 const app = express();
 
+app.use(limiter);
 app.use(compression());
 app.use(logger);
-app.use(productCacheMiddleware);
+app.use(cacheMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -29,6 +31,10 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
+
+app.use("/api/config/paypal", (req, res) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
+});
 
 const __dirname = path.resolve();
 

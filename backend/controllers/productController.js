@@ -65,7 +65,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
-    const pageSize = 6;
+    const pageSize = parseInt(req.query.pageSize) || 6;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * pageSize;
 
     const keyword = req.query.keyword
       ? {
@@ -76,17 +78,20 @@ const fetchProducts = asyncHandler(async (req, res) => {
         }
       : {};
 
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword })
-      .select("name image brand price description category rating numReviews")
-      .limit(pageSize)
-      .lean();
+    const [count, products] = await Promise.all([
+      Product.countDocuments({ ...keyword }),
+      Product.find({ ...keyword })
+        .select("name image brand price description category rating numReviews")
+        .limit(pageSize)
+        .skip(skip)
+        .lean(),
+    ]);
 
     res.json({
       products,
-      page: 1,
+      page,
       pages: Math.ceil(count / pageSize),
-      hasMore: false,
+      hasMore: page < Math.ceil(count / pageSize),
     });
   } catch (error) {
     console.error(error);
@@ -96,7 +101,7 @@ const fetchProducts = asyncHandler(async (req, res) => {
 
 const fetchProductById = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).lean();
     if (product) {
       return res.json(product);
     } else {

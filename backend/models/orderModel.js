@@ -85,5 +85,11 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-const Order = new mongoose.model("Order", orderSchema);
+orderSchema.index({ user: 1 });
+orderSchema.index({ isPaid: 1 });
+orderSchema.index({ paidAt: 1 });
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ user: 1, createdAt: -1 });
+
+const Order = mongoose.model("Order", orderSchema);
 export default Order;

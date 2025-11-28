@@ -14,7 +14,7 @@ const ProductDetails = lazy(
   () => import("./pages/Products/ProductDetails.jsx"),
 );
 const Shop = lazy(() => import("./pages/Shop.jsx"));
-const PrivateRoute = lazy(() => import("./components/PrivateRoute.jsx"));
+import PrivateRoute from "./components/PrivateRoute.jsx";
 const Login = lazy(() => import("./pages/Auth/Login.jsx"));
 const Register = lazy(() => import("./pages/Auth/Register.jsx"));
 const Profile = lazy(() => import("./pages/User/Profile.jsx"));
@@ -26,6 +26,7 @@ const CategoryList = lazy(() => import("./pages/Admin/CategoryList.jsx"));
 const CreateProduct = lazy(() => import("./pages/Admin/CreateProduct.jsx"));
 const ProductUpdate = lazy(() => import("./pages/Admin/ProductUpdate.jsx"));
 const ProductList = lazy(() => import("./pages/Admin/ProductList.jsx"));
+const Shipping = lazy(() => import("./pages/Orders/Shipping.jsx"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorite" element={<Favorites />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/shipping" element={<Shipping />} />
       </Route>
 
       <Route path="/admin" element={<AdminRoute />}>

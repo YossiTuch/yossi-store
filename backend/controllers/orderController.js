@@ -68,7 +68,7 @@ const createOrder = async (req, res) => {
       itemsPrice,
       taxPrice,
       shippingPrice,
-      totalPrice,
+      totalPrice: parseFloat(totalPrice),
     });
 
     const createdOrder = await order.save();
@@ -80,8 +80,26 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).populate("user", "id username");
-    res.json(orders);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      Order.find({})
+        .populate("user", "id username")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Order.countDocuments({}),
+    ]);
+
+    res.json({
+      orders,
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -89,8 +107,25 @@ const getAllOrders = async (req, res) => {
 
 const getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id });
-    res.json(orders);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      Order.find({ user: req.user._id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Order.countDocuments({ user: req.user._id }),
+    ]);
+
+    res.json({
+      orders,
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -107,8 +142,16 @@ const countTotalOrders = async (req, res) => {
 
 const calculateTotalSales = async (req, res) => {
   try {
-    const orders = await Order.find();
-    const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+    const result = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+
+    const totalSales = result.length > 0 ? result[0].totalSales : 0;
     res.json({ totalSales });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -141,10 +184,9 @@ const calcualteTotalSalesByDate = async (req, res) => {
 
 const findOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
-      "user",
-      "username email"
-    );
+    const order = await Order.findById(req.params.id)
+      .populate("user", "username email")
+      .lean();
 
     if (order) {
       res.json(order);
@@ -159,20 +201,23 @@ const findOrderById = async (req, res) => {
 
 const markOrderAsPaid = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        isPaid: true,
+        paidAt: Date.now(),
+        paymentResult: {
+          id: req.body.id,
+          status: req.body.status,
+          update_time: req.body.update_time,
+          email_address: req.body.payer.email_address,
+        },
+      },
+      { new: true }
+    );
 
     if (order) {
-      order.isPaid = true;
-      order.paidAt = Date.now();
-      order.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.payer.email_address,
-      };
-
-      const updateOrder = await order.save();
-      res.status(200).json(updateOrder);
+      res.status(200).json(order);
     } else {
       res.status(404);
       throw new Error("Order not found");
@@ -184,14 +229,17 @@ const markOrderAsPaid = async (req, res) => {
 
 const markOrderAsDelivered = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        isDelivered: true,
+        deliveredAt: Date.now(),
+      },
+      { new: true }
+    );
 
     if (order) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
-
-      const updatedOrder = await order.save();
-      res.json(updatedOrder);
+      res.json(order);
     } else {
       res.status(404);
       throw new Error("Order not found");
