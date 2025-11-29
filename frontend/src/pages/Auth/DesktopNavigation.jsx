@@ -5,11 +5,14 @@ import {
   AiOutlineLogin,
   AiOutlineUserAdd,
   AiOutlineShoppingCart,
+  AiOutlineFileText,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { Link } from "react-router";
 import { DarkThemeToggle } from "flowbite-react";
+import { useSelector } from "react-redux";
 import FavoritesCount from "../Products/FavoritesCount";
+import CartCount from "./CartCount";
 
 const DesktopNavigation = ({ userInfo, logoutHandler }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -53,16 +56,21 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
           <span className="nav-item-name mt-[3rem] hidden">SHOP</span>
         </Link>
 
+        <Link
+          to="/cart"
+          className="relative flex transform items-center transition-transform hover:translate-x-2"
+        >
+          <div className="relative mt-[3rem] mr-2">
+            <AiOutlineShoppingCart size={26} />
+            <div className="absolute -top-4 -right-2">
+              <CartCount />
+            </div>
+          </div>
+          <span className="nav-item-name mt-[3rem] hidden">CART</span>
+        </Link>
+
         {userInfo && (
           <>
-            <Link
-              to="/cart"
-              className="flex transform items-center transition-transform hover:translate-x-2"
-            >
-              <AiOutlineShoppingCart className="mt-[3rem] mr-2" size={26} />
-              <span className="nav-item-name mt-[3rem] hidden">CART</span>
-            </Link>
-
             <Link
               to="/favorite"
               className="relative flex transform items-center transition-transform hover:translate-x-2"
@@ -74,6 +82,13 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
                 </div>
               </div>
               <span className="nav-item-name mt-[3rem] hidden">Favorites</span>
+            </Link>
+            <Link
+              to="/myorders"
+              className="flex transform items-center transition-transform hover:translate-x-2"
+            >
+              <AiOutlineFileText className="mt-[3rem] mr-2" size={26} />
+              <span className="nav-item-name mt-[3rem] hidden">My Orders</span>
             </Link>
           </>
         )}

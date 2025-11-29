@@ -5,6 +5,7 @@ import authReducer from "./features/auth/authSlice";
 import favoritesReducer from "../redux/features/favorites/favoriteSlice";
 import cartReducer from "../redux/features/cart/cartSlice";
 import shopReducer from "../redux/features/shop/shopSlice";
+import { cartSyncMiddleware } from "./middleware/cartSyncMiddleware";
 
 const getInitialFavorites = () => {
   const userInfo = localStorage.getItem("userInfo");
@@ -34,7 +35,9 @@ const store = configureStore({
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware()
+      .concat(apiSlice.middleware)
+      .concat(cartSyncMiddleware),
   devTools: true,
 });
 

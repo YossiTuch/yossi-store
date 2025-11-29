@@ -5,11 +5,14 @@ import {
   AiOutlineLogin,
   AiOutlineUserAdd,
   AiOutlineShoppingCart,
+  AiOutlineFileText,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { Link } from "react-router";
 import { DarkThemeToggle } from "flowbite-react";
+import { useSelector } from "react-redux";
 import FavoritesCount from "../Products/FavoritesCount";
+import CartCount from "./CartCount";
 
 const MobileNavigation = ({ userInfo, logoutHandler }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,15 +98,21 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
             >
               <AiOutlineShopping size={20} /> <span>Shop</span>
             </Link>
+            <Link
+              to="/cart"
+              onClick={closeMobileMenu}
+              className="relative flex items-center gap-2 hover:text-amber-400"
+            >
+              <div className="relative">
+                <AiOutlineShoppingCart size={20} />
+                <div className="absolute -top-4 -right-2">
+                  <CartCount />
+                </div>
+              </div>
+              <span>Cart</span>
+            </Link>
             {userInfo && (
               <>
-                <Link
-                  to="/cart"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <AiOutlineShoppingCart size={20} /> <span>Cart</span>
-                </Link>
                 <Link
                   to="/favorite"
                   onClick={closeMobileMenu}
@@ -112,6 +121,14 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
                   <FaHeart size={18} />
                   <span>Favorites</span>
                   <FavoritesCount />
+                </Link>
+                <Link
+                  to="/myorders"
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-2 hover:text-amber-400"
+                >
+                  <AiOutlineFileText size={20} />
+                  <span>My Orders</span>
                 </Link>
               </>
             )}

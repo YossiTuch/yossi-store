@@ -19,7 +19,8 @@ const createUser = asyncHandler(async (req, res) => {
     });
   }
 
-  const userExists = await User.findOne({ email });
+  const normalizedEmail = email.toLowerCase().trim();
+  const userExists = await User.findOne({ email: normalizedEmail });
   if (userExists) {
     return res.status(400).json({ message: "User already exists." });
   }
@@ -27,7 +28,7 @@ const createUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({ username, email: normalizedEmail, password: hashedPassword });
 
   try {
     await newUser.save();
@@ -59,7 +60,8 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   }
 
-  const existingUser = await User.findOne({ email });
+  const normalizedEmail = email.toLowerCase().trim();
+  const existingUser = await User.findOne({ email: normalizedEmail });
 
   if (existingUser) {
     const isPasswordValid = await bcrypt.compare(
@@ -119,7 +121,6 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
 
   if (user) {
     user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -193,7 +194,6 @@ const updateUserById = asyncHandler(async (req, res) => {
 
   if (user) {
     user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
     user.isAdmin =
       req.body.isAdmin !== undefined ? Boolean(req.body.isAdmin) : user.isAdmin;
 
@@ -211,6 +211,53 @@ const updateUserById = asyncHandler(async (req, res) => {
   }
 });
 
+const getCart = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    res.json({
+      cart: user.cart || {
+        cartItems: [],
+        shippingAddress: {},
+        paymentMethod: "PayPal",
+        itemsPrice: "0.00",
+        shippingPrice: "0.00",
+        taxPrice: "0.00",
+        totalPrice: "0.00",
+      },
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+});
+
+const updateCart = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+
+  const { cart } = req.body;
+  if (!cart || typeof cart !== "object") {
+    res.status(400);
+    throw new Error("Invalid cart data");
+  }
+
+  if (!Array.isArray(cart.cartItems)) {
+    cart.cartItems = [];
+  }
+
+  user.cart = cart;
+  const updatedUser = await user.save();
+
+  res.json({
+    cart: updatedUser.cart,
+  });
+});
+
 export {
   createUser,
   loginUser,
@@ -222,4 +269,6 @@ export {
   deleteUserById,
   getUserById,
   updateUserById,
+  getCart,
+  updateCart,
 };

@@ -39,7 +39,6 @@ const CategoryList = () => {
       }
       refetch();
     } catch (error) {
-      console.error(error);
       toast.error("Creating category failed, try again.");
     }
   };
@@ -70,7 +69,6 @@ const CategoryList = () => {
       }
       refetch();
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -87,7 +85,6 @@ const CategoryList = () => {
       }
       refetch();
     } catch (error) {
-      console.error(error);
       toast.error("Category deletion failed. Try again.");
     }
   };

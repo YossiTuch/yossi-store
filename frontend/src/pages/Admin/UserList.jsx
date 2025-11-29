@@ -17,7 +17,6 @@ const UserList = () => {
 
   const [editableUserId, setEditableUserId] = useState(null);
   const [editableUserName, setEditableUserName] = useState("");
-  const [editableUserEmail, setEditableUserEmail] = useState("");
 
   const [updateUser] = useUpdateUserMutation();
 
@@ -36,10 +35,9 @@ const UserList = () => {
     }
   };
 
-  const toggleEdit = (id, username, email) => {
+  const toggleEdit = (id, username) => {
     setEditableUserId(id);
     setEditableUserName(username);
-    setEditableUserEmail(email);
   };
 
   const updateHandler = async (id) => {
@@ -47,7 +45,6 @@ const UserList = () => {
       await updateUser({
         userId: id,
         username: editableUserName,
-        email: editableUserEmail,
       });
       setEditableUserId(null);
       refetch();
@@ -106,7 +103,7 @@ const UserList = () => {
                           {user.username}{" "}
                           <button
                             onClick={() =>
-                              toggleEdit(user._id, user.username, user.email)
+                              toggleEdit(user._id, user.username)
                             }
                             className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
                           >
@@ -116,36 +113,9 @@ const UserList = () => {
                       )}
                     </td>
                     <td className="px-2 py-2 sm:px-4">
-                      {editableUserId === user._id ? (
-                        <div className="flex flex-col items-stretch sm:flex-row sm:items-center">
-                          <input
-                            type="text"
-                            value={editableUserEmail}
-                            onChange={(e) =>
-                              setEditableUserEmail(e.target.value)
-                            }
-                            className="min-h-[44px] w-full rounded-lg border p-2 sm:min-h-0"
-                          />
-                          <button
-                            onClick={() => updateHandler(user._id)}
-                            className="mt-2 ml-0 min-h-[44px] rounded-lg bg-blue-500 px-4 py-2 text-white sm:mt-0 sm:ml-2 sm:min-h-0"
-                          >
-                            <FaCheck />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          <a href={`mailto:${user.email}`}>{user.email}</a>{" "}
-                          <button
-                            onClick={() =>
-                              toggleEdit(user._id, user.username, user.email)
-                            }
-                            className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
-                          >
-                            <FaEdit className="ml-[1rem]" />
-                          </button>
-                        </div>
-                      )}
+                      <a href={`mailto:${user.email}`} className="text-blue-600 hover:underline dark:text-blue-400">
+                        {user.email}
+                      </a>
                     </td>
                     <td className="px-2 py-2 sm:px-4">
                       {user.isAdmin ? (

@@ -229,7 +229,19 @@ const markOrderAsPaid = async (req, res) => {
 
 const markOrderAsDelivered = async (req, res) => {
   try {
-    const order = await Order.findByIdAndUpdate(
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+
+    if (!req.user.isAdmin && order.user.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error("Not authorized to mark this order as delivered");
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
       {
         isDelivered: true,
@@ -238,12 +250,7 @@ const markOrderAsDelivered = async (req, res) => {
       { new: true }
     );
 
-    if (order) {
-      res.json(order);
-    } else {
-      res.status(404);
-      throw new Error("Order not found");
-    }
+    res.json(updatedOrder);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

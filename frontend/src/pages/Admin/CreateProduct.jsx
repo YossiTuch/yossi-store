@@ -45,7 +45,6 @@ const CreateProduct = () => {
       toast.success(`${product.name} is created`);
       navigate("/");
     } catch (error) {
-      console.error(error);
       const errorMessage = error?.data?.details
         ? error.data.details.join(", ")
         : error?.data?.message || "Product create failed. Try Again.";

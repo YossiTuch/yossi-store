@@ -65,6 +65,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: { favorites },
       }),
     }),
+    getCart: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/cart`,
+      }),
+      providesTags: ["Cart"],
+    }),
+    updateCart: builder.mutation({
+      query: (cart) => ({
+        url: `${USERS_URL}/cart`,
+        method: "PUT",
+        body: { cart },
+      }),
+      invalidatesTags: ["Cart"],
+    }),
   }),
 });
 
@@ -78,4 +92,6 @@ export const {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
   useUpdateFavoritesMutation,
+  useGetCartQuery,
+  useUpdateCartMutation,
 } = userApiSlice;

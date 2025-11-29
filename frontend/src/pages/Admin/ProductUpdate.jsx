@@ -103,7 +103,6 @@ const AdminProductUpdate = () => {
         navigate("/admin/productlist");
       }
     } catch (err) {
-      console.log(err);
       toast.error("Product update failed. Try again.");
     }
   };
@@ -119,7 +118,6 @@ const AdminProductUpdate = () => {
       toast.success(`"${data.name}" is deleted`);
       navigate("/admin/productlist");
     } catch (err) {
-      console.log(err);
       toast.error("Delete failed. Try again.");
     }
   };

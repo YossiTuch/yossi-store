@@ -10,6 +10,8 @@ import {
   deleteUserById,
   getUserById,
   updateUserById,
+  getCart,
+  updateCart,
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
@@ -30,6 +32,11 @@ router
   .put(authenticate, updateCurrentUserProfile);
 
 router.put("/favorites", authenticate, updateFavorites);
+
+router
+  .route("/cart")
+  .get(authenticate, getCart)
+  .put(authenticate, updateCart);
 
 router
   .route("/:id")

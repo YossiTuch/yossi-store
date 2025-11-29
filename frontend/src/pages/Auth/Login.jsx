@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../redux/api/usersApiSlice";
 import { setCredentials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +35,7 @@ const Login = () => {
       toast.error(error?.data?.message || error.message);
     }
   };
+
   return (
     <div>
       <section className="flex flex-wrap px-4 md:pl-[10rem] md:px-0 max-sm:text-center">
@@ -90,4 +92,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

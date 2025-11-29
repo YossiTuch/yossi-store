@@ -8,7 +8,6 @@ import { useProfileMutation } from "../../redux/api/usersApiSlice";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -19,8 +18,7 @@ const Profile = () => {
 
   useEffect(() => {
     setUsername(userInfo.username);
-    setEmail(userInfo.email);
-  }, [userInfo.username, userInfo.email]);
+  }, [userInfo.username]);
   const dispatch = useDispatch();
 
   const submitHandler = async (e) => {
@@ -32,7 +30,6 @@ const Profile = () => {
         const res = await updateProfile({
           _id: userInfo._id,
           username,
-          email,
           password,
         }).unwrap();
         dispatch(setCredentials({ ...res }));
@@ -65,11 +62,14 @@ const Profile = () => {
               <label className="mb-2 block">Email</label>
               <input
                 type="email"
-                placeholder="Enter Email"
-                className="form-input w-full rounded-sm border p-4"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder={userInfo.email}
+                className="form-input w-full rounded-sm border p-4 bg-gray-100 cursor-not-allowed dark:bg-slate-700"
+                value={userInfo.email || ""}
+                disabled
               />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Email cannot be changed
+              </p>
             </div>
             <div className="mb-4">
               <label className="mb-2 block">Password</label>
