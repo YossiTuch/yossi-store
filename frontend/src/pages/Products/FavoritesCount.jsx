@@ -2,7 +2,13 @@ import { useSelector } from "react-redux";
 
 const FavoritesCount = () => {
   const favorites = useSelector((state) => state.favorites);
-  const favoriteCount = favorites.length;
+  
+  // Ensure favorites is an array and filter out any invalid values
+  const validFavorites = Array.isArray(favorites) 
+    ? favorites.filter((id) => id && id !== null && id !== undefined && id !== "")
+    : [];
+  
+  const favoriteCount = validFavorites.length;
 
   if (favoriteCount === 0) return null;
 
