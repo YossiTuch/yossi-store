@@ -33,6 +33,8 @@ const Shop = () => {
   const categoriesQuery = useFetchCategoriesQuery();
   const [priceFilter, setPriceFilter] = useState("");
   const debouncedPriceFilter = useDebouncedValue(priceFilter, 300);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
   const lastDispatchedRef = useRef("");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -94,6 +96,17 @@ const Shop = () => {
     }
 
     let filtered = productsData;
+
+    // Apply search filter
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase().trim();
+      filtered = filtered.filter((product) => {
+        const nameMatch = product.name?.toLowerCase().includes(searchLower);
+        const descriptionMatch = product.description?.toLowerCase().includes(searchLower);
+        const brandMatch = product.brand?.toLowerCase().includes(searchLower);
+        return nameMatch || descriptionMatch || brandMatch;
+      });
+    }
 
     if (selectedBrand) {
       filtered = filtered.filter((product) => product.brand === selectedBrand);
@@ -168,7 +181,7 @@ const Shop = () => {
       dispatch(setProducts(filtered));
       lastDispatchedRef.current = newKey;
     }
-  }, [hasFilters, productsData, debouncedPriceFilter, selectedBrand, dispatch]);
+  }, [hasFilters, productsData, debouncedPriceFilter, debouncedSearchTerm, selectedBrand, dispatch]);
 
   const handleBrandClick = useCallback(
     (brand) => {
@@ -195,6 +208,7 @@ const Shop = () => {
     dispatch(setRadio([]));
     dispatch(setSelectedBrand(null));
     setPriceFilter("");
+    setSearchTerm("");
   }, [dispatch]);
 
   const toggleFilters = useCallback(() => {
@@ -344,14 +358,63 @@ const Shop = () => {
           </aside>
 
           <div className="flex-1">
-            <div className="mb-6 flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-                Products
-              </h1>
-              <span className="rounded-full bg-pink-100 px-4 py-1.5 text-sm font-semibold text-pink-800 dark:bg-amber-900 dark:text-white">
-                {products?.length || 0}{" "}
-                {products?.length === 1 ? "item" : "items"}
-              </span>
+            <div className="mb-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
+                  Products
+                </h1>
+                <span className="rounded-full bg-pink-100 px-4 py-1.5 text-sm font-semibold text-pink-800 dark:bg-amber-900 dark:text-white">
+                  {products?.length || 0}{" "}
+                  {products?.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-gray-400 dark:text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search products by name, description, or brand..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 py-2.5 text-sm placeholder-gray-400 transition-colors focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    aria-label="Clear search"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
 
             {products.length === 0 ? (

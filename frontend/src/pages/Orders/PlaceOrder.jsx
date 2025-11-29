@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +14,12 @@ const PlaceOrder = () => {
   const cart = useSelector((state) => state.cart);
 
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   useEffect(() => {
+    // Don't redirect if we're in the process of placing an order
+    if (isPlacingOrder) return;
+    
     if (!cart.cartItems || cart.cartItems.length === 0) {
       navigate("/cart");
       return;
@@ -23,7 +27,7 @@ const PlaceOrder = () => {
     if (!cart.shippingAddress?.address) {
       navigate("/shipping");
     }
-  }, [cart.cartItems, cart.shippingAddress?.address, navigate]);
+  }, [cart.cartItems, cart.shippingAddress?.address, navigate, isPlacingOrder]);
 
   const dispatch = useDispatch();
 
@@ -40,6 +44,7 @@ const PlaceOrder = () => {
         return;
       }
 
+      setIsPlacingOrder(true);
       const res = await createOrder({
         orderItems: cart.cartItems || [],
         shippingAddress: cart.shippingAddress || {},
@@ -49,9 +54,25 @@ const PlaceOrder = () => {
         taxPrice: cart.taxPrice || 0,
         totalPrice: cart.totalPrice || 0,
       }).unwrap();
-      dispatch(clearCartItems());
-      navigate(`/order/${res._id}`);
+      
+      // Get order ID and navigate first (synchronous), then clear cart
+      const orderId = res._id || res.id;
+      if (orderId) {
+        // Navigate immediately (synchronous operation)
+        navigate(`/order/${orderId}`, { replace: true });
+        // Clear cart after navigation to prevent useEffect redirect
+        setTimeout(() => {
+          dispatch(clearCartItems());
+        }, 0);
+      } else {
+        toast.error("Order created but could not retrieve order ID");
+        navigate("/myorders", { replace: true });
+        setTimeout(() => {
+          dispatch(clearCartItems());
+        }, 0);
+      }
     } catch (error) {
+      setIsPlacingOrder(false);
       toast.error(error?.data?.message || error?.message || "Failed to place order");
     }
   };

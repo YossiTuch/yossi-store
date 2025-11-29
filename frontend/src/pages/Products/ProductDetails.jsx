@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import {
   useGetProductDetailsQuery,
   useCreateReviewMutation,
+  useUpdateReviewMutation,
 } from "../../redux/api/productApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
@@ -35,6 +36,8 @@ const ProductDetails = () => {
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
+  const [updateReview, { isLoading: loadingUpdateReview }] =
+    useUpdateReviewMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -47,10 +50,19 @@ const ProductDetails = () => {
       }).unwrap();
       refetch();
       toast.success("Review created successfully");
+      // Reset form after successful creation
+      setRating(0);
+      setComment("");
     } catch (error) {
-      toast.error(
-        error?.data?.message || error?.message || "Failed to create review",
-      );
+      const errorMessage = error?.data?.message || error?.message || "Failed to create review";
+      // If user already reviewed, show helpful message
+      if (errorMessage.includes("already reviewed") || errorMessage.includes("Product already reviewed")) {
+        toast.error("You've already reviewed this product. Your review is shown in edit mode.");
+        // Refetch to ensure we have the latest review data
+        refetch();
+      } else {
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -212,8 +224,12 @@ const ProductDetails = () => {
             <div className="rounded-xl border border-slate-200 bg-white shadow-lg sm:rounded-2xl dark:border-slate-700 dark:bg-slate-800">
               <ProductTabs
                 loadingProductReview={loadingProductReview}
+                loadingUpdateReview={loadingUpdateReview}
                 userInfo={userInfo}
                 submitHandler={submitHandler}
+                updateReview={updateReview}
+                productId={productId}
+                refetch={refetch}
                 rating={rating}
                 setRating={setRating}
                 comment={comment}

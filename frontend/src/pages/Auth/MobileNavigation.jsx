@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AiOutlineHome,
   AiOutlineShopping,
@@ -6,71 +6,87 @@ import {
   AiOutlineUserAdd,
   AiOutlineShoppingCart,
   AiOutlineFileText,
+  AiOutlineUser,
+  AiOutlineLogout,
+  AiOutlineClose,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router";
-import { DarkThemeToggle } from "flowbite-react";
-import { useSelector } from "react-redux";
+import { Link, useLocation } from "react-router";
 import FavoritesCount from "../Products/FavoritesCount";
 import CartCount from "./CartCount";
 
 const MobileNavigation = ({ userInfo, logoutHandler }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen((prev) => !prev);
-  };
-
-  const closeMobileMenu = () => {
+  useEffect(() => {
     setMobileMenuOpen(false);
-  };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
+  const isActive = (path) => location.pathname === path;
+
+  const NavLink = ({ to, icon: Icon, label, showBadge, onClick }) => (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-all duration-200 ${
+        isActive(to)
+          ? "bg-pink-600/20 text-pink-400 dark:bg-amber-600/20 dark:text-amber-400"
+          : "text-gray-300 hover:bg-white/10 hover:text-white"
+      }`}
+    >
+      <div className="relative">
+        <Icon className="text-xl" />
+        {showBadge && (
+          <div className="absolute -top-1 -right-1">
+            {showBadge === "cart" ? <CartCount /> : <FavoritesCount />}
+          </div>
+        )}
+      </div>
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
 
   return (
-    <div className="fixed top-0 right-0 left-0 z-[999] bg-black text-white lg:hidden">
-      <div className="flex h-14 items-center justify-between px-4">
+    <nav className="fixed top-0 left-0 right-0 z-[999] bg-gradient-to-r from-slate-900 to-black text-white shadow-lg lg:hidden">
+      <div className="flex h-16 items-center justify-between px-4">
         <Link
           to="/"
-          onClick={closeMobileMenu}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-bold transition-transform hover:scale-105"
         >
-          <AiOutlineShopping size={22} />
-          <span className="font-semibold">YossiStore</span>
+          <AiOutlineShopping className="text-2xl text-pink-400 dark:text-amber-400" />
+          <span className="text-lg">YossiStore</span>
         </Link>
         <div className="flex items-center gap-3">
-          <DarkThemeToggle />
           <button
-            aria-controls="mobile-menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={toggleMobileMenu}
-            className="inline-flex items-center justify-center rounded p-2 hover:bg-gray-800 focus:ring-2 focus:ring-white focus:outline-none"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="rounded-lg p-2 transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <AiOutlineClose className="h-6 w-6" />
             ) : (
               <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 fill="none"
-                viewBox="0 0 24 24"
                 stroke="currentColor"
+                viewBox="0 0 24 24"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth={2}
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
@@ -78,140 +94,171 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
           </button>
         </div>
       </div>
-      {mobileMenuOpen && (
-        <div
-          id="mobile-menu"
-          className="border-t border-gray-800 bg-black px-4 pt-2 pb-4"
-        >
-          <nav className="flex flex-col space-y-3">
-            <Link
-              to="/"
-              onClick={closeMobileMenu}
-              className="flex items-center gap-2 hover:text-amber-400"
-            >
-              <AiOutlineHome size={20} /> <span>Home</span>
-            </Link>
-            <Link
-              to="/shop"
-              onClick={closeMobileMenu}
-              className="flex items-center gap-2 hover:text-amber-400"
-            >
-              <AiOutlineShopping size={20} /> <span>Shop</span>
-            </Link>
-            <Link
-              to="/cart"
-              onClick={closeMobileMenu}
-              className="relative flex items-center gap-2 hover:text-amber-400"
-            >
-              <div className="relative">
-                <AiOutlineShoppingCart size={20} />
-                <div className="absolute -top-4 -right-2">
-                  <CartCount />
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+          mobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Menu Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] transform bg-gradient-to-b from-slate-900 to-black shadow-2xl transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex h-full flex-col overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-white/10 p-4">
+            <div className="flex items-center gap-3">
+              {userInfo && (
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-600/20 text-sm font-semibold dark:bg-amber-600/20">
+                  {userInfo.username?.charAt(0).toUpperCase() || "U"}
                 </div>
+              )}
+              <div>
+                {userInfo ? (
+                  <>
+                    <p className="font-semibold">{userInfo.username}</p>
+                    <p className="text-xs text-gray-400">
+                      {userInfo.isAdmin ? "Administrator" : "Customer"}
+                    </p>
+                  </>
+                ) : (
+                  <p className="font-semibold">Guest</p>
+                )}
               </div>
-              <span>Cart</span>
-            </Link>
+            </div>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg p-2 transition-colors hover:bg-white/10"
+            >
+              <AiOutlineClose className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="flex-1 space-y-1 p-4">
+            <NavLink
+              to="/"
+              icon={AiOutlineHome}
+              label="Home"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <NavLink
+              to="/shop"
+              icon={AiOutlineShopping}
+              label="Shop"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <NavLink
+              to="/cart"
+              icon={AiOutlineShoppingCart}
+              label="Cart"
+              showBadge="cart"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
             {userInfo && (
               <>
-                <Link
+                <NavLink
                   to="/favorite"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <FaHeart size={18} />
-                  <span>Favorites</span>
-                  <FavoritesCount />
-                </Link>
-                <Link
+                  icon={FaHeart}
+                  label="Favorites"
+                  showBadge="favorites"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
                   to="/myorders"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <AiOutlineFileText size={20} />
-                  <span>My Orders</span>
-                </Link>
+                  icon={AiOutlineFileText}
+                  label="My Orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
               </>
             )}
+
+            {userInfo && userInfo.isAdmin && (
+              <div className="border-t border-white/10 pt-4">
+                <p className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  Admin
+                </p>
+                <NavLink
+                  to="/admin/dashboard"
+                  icon={AiOutlineFileText}
+                  label="Dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
+                  to="/admin/productlist"
+                  icon={AiOutlineShopping}
+                  label="Products"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
+                  to="/admin/categorylist"
+                  icon={AiOutlineFileText}
+                  label="Categories"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
+                  to="/admin/orderlist"
+                  icon={AiOutlineFileText}
+                  label="Orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
+                  to="/admin/userlist"
+                  icon={AiOutlineUser}
+                  label="Users"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Footer Actions */}
+          <div className="border-t border-white/10 p-4">
             {userInfo ? (
               <>
-                {userInfo.isAdmin && (
-                  <>
-                    <Link
-                      to="/admin/dashboard"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-2 hover:text-amber-400"
-                    >
-                      <span>Dashboard</span>
-                    </Link>
-                    <Link
-                      to="/admin/productlist"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-2 hover:text-amber-400"
-                    >
-                      <span>Products</span>
-                    </Link>
-                    <Link
-                      to="/admin/categorylist"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-2 hover:text-amber-400"
-                    >
-                      <span>Category</span>
-                    </Link>
-                    <Link
-                      to="/admin/orderlist"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-2 hover:text-amber-400"
-                    >
-                      <span>Orders</span>
-                    </Link>
-                    <Link
-                      to="/admin/userlist"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-2 hover:text-amber-400"
-                    >
-                      <span>Users</span>
-                    </Link>
-                  </>
-                )}
-                <Link
+                <NavLink
                   to="/profile"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <span>Profile</span>
-                </Link>
+                  icon={AiOutlineUser}
+                  label="Profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
                 <button
                   onClick={(e) => {
                     logoutHandler(e);
-                    closeMobileMenu();
+                    setMobileMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 text-left hover:text-amber-400"
+                  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-400 transition-colors hover:bg-red-500/20"
                 >
-                  <span>Logout</span>
+                  <AiOutlineLogout className="text-xl" />
+                  <span className="font-medium">Logout</span>
                 </button>
               </>
             ) : (
               <>
-                <Link
+                <NavLink
                   to="/login"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <AiOutlineLogin size={20} /> <span>Login</span>
-                </Link>
-                <Link
+                  icon={AiOutlineLogin}
+                  label="Login"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
                   to="/register"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-2 hover:text-amber-400"
-                >
-                  <AiOutlineUserAdd size={20} /> <span>Register</span>
-                </Link>
+                  icon={AiOutlineUserAdd}
+                  label="Register"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
               </>
             )}
-          </nav>
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    </nav>
   );
 };
 

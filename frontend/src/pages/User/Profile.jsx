@@ -3,114 +3,170 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { setCredentials } from "../../redux/features/auth/authSlice";
-import { Link } from "react-router";
-import { useProfileMutation } from "../../redux/api/usersApiSlice";
+import {
+  useGetCurrentUserProfileQuery,
+  useProfileMutation,
+} from "../../redux/api/usersApiSlice";
+import ProfileView from "./ProfileView";
+import ProfileEditForm from "./ProfileEditForm";
+import QuickActionsSidebar from "./QuickActionsSidebar";
 
 const Profile = () => {
+  const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const {
+    data: profileData,
+    isLoading: loadingProfile,
+    refetch,
+  } = useGetCurrentUserProfileQuery();
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
+  const user = profileData || userInfo;
+
   useEffect(() => {
-    setUsername(userInfo.username);
-  }, [userInfo.username]);
-  const dispatch = useDispatch();
+    if (user) {
+      setUsername(user.username || "");
+    }
+  }, [user]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-    } else {
-      try {
-        const res = await updateProfile({
-          _id: userInfo._id,
-          username,
-          password,
-        }).unwrap();
-        dispatch(setCredentials({ ...res }));
-        toast.success("Profile updated successfully");
-      } catch (error) {
-        toast.error(error?.data.message || error.message);
+
+    if (password) {
+      if (!currentPassword) {
+        toast.error("Please enter your current password to change it");
+        return;
       }
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters");
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error("New passwords do not match");
+        return;
+      }
+      if (password === currentPassword) {
+        toast.error("New password must be different from current password");
+        return;
+      }
+    }
+
+    try {
+      const updateData = { username };
+      if (password) {
+        updateData.currentPassword = currentPassword;
+        updateData.password = password;
+      }
+
+      const res = await updateProfile(updateData).unwrap();
+      dispatch(setCredentials({ ...res }));
+      toast.success("Profile updated successfully");
+      setIsEditing(false);
+      setCurrentPassword("");
+      setPassword("");
+      setConfirmPassword("");
+      refetch();
+    } catch (error) {
+      toast.error(error?.data?.message || error?.message || "Update failed");
     }
   };
 
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setUsername(user?.username || "");
+    setCurrentPassword("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  if (loadingProfile) {
+    return (
+      <div className="flex min-h-[calc(100vh-100px)] items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-[calc(100vh-100px)]">
+        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-md dark:border-red-800 dark:bg-red-900/20">
+            <p className="text-red-800 dark:text-red-200">
+              Unable to load profile. Please try again.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="containero p-4">
-      <div className="align-center mt-[5rem] flex justify-center md:flex md:space-x-4">
-        <div className="md:w-1/3 max-sm:w-4/5">
-          <h2 className="mb-4 text-2xl font-semibold max-md:text-center">
-            Update Profile
-          </h2>
-          <form onSubmit={submitHandler}>
-            <div className="mb-4">
-              <label className="mb-2 block">Name</label>
-              <input
-                type="text"
-                placeholder="Enter Name"
-                className="form-input w-full rounded-sm border p-4"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+    <div className="min-h-[calc(100vh-100px)]">
+      <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
+            My Profile
+          </h1>
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="rounded-full bg-pink-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-pink-700 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:outline-none dark:bg-amber-600 dark:hover:bg-amber-700 dark:focus:ring-amber-500"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-800 sm:p-8">
+              {!isEditing ? (
+                <ProfileView user={user} formatDate={formatDate} />
+              ) : (
+                <ProfileEditForm
+                  user={user}
+                  username={username}
+                  setUsername={setUsername}
+                  currentPassword={currentPassword}
+                  setCurrentPassword={setCurrentPassword}
+                  password={password}
+                  setPassword={setPassword}
+                  confirmPassword={confirmPassword}
+                  setConfirmPassword={setConfirmPassword}
+                  loadingUpdateProfile={loadingUpdateProfile}
+                  onSubmit={submitHandler}
+                  onCancel={cancelEdit}
+                />
+              )}
             </div>
-            <div className="mb-4">
-              <label className="mb-2 block">Email</label>
-              <input
-                type="email"
-                placeholder={userInfo.email}
-                className="form-input w-full rounded-sm border p-4 bg-gray-100 cursor-not-allowed dark:bg-slate-700"
-                value={userInfo.email || ""}
-                disabled
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Email cannot be changed
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="mb-2 block">Password</label>
-              <input
-                type="password"
-                placeholder="Enter Password"
-                className="form-input w-full rounded-sm border p-4"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="mb-2 block">Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                className="form-input w-full rounded-sm border p-4"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-between">
-              <button
-                type="submit"
-                disabled={loadingUpdateProfile}
-                className="rounded bg-blue-500 px-4 py-2 text-white duration-200 hover:bg-blue-700 dark:bg-amber-600 dark:hover:bg-amber-800"
-              >
-                Update
-              </button>
-              <Link
-                to="/user-orders"
-                className="rounded bg-blue-500 px-4 py-2 text-white duration-200 hover:bg-blue-700 dark:bg-amber-700 dark:hover:bg-amber-900"
-              >
-                My Orders
-              </Link>
-            </div>
-          </form>
-          {loadingUpdateProfile && <Loader />}
+          </div>
+
+          <div className="lg:col-span-1">
+            <QuickActionsSidebar user={user} />
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default Profile;

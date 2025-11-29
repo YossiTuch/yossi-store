@@ -7,12 +7,14 @@
 html {
   height: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 body {
   height: 100%;
   min-height: 100vh;
   background-color: white;
+  overflow-x: hidden;
 }
 
 html.dark body {
@@ -23,6 +25,7 @@ html.dark body {
   height: 100%;
   min-height: 100vh;
   background-color: white;
+  overflow-x: hidden;
 }
 
 html.dark #root {
@@ -59,36 +62,29 @@ html.dark #root {
 .slick-dots li.slick-active button:before {
   opacity: 1;
 }
-
 @media (min-width: 640px) {
   .slick-dots {
     bottom: -35px !important;
   }
-  
   .slick-dots li button {
     width: 10px !important;
     height: 10px !important;
   }
-  
   .slick-dots li button:before {
     font-size: 10px !important;
   }
 }
-
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;

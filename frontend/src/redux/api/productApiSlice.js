@@ -81,6 +81,15 @@ export const productApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Product"]
     }),
 
+    updateReview: builder.mutation({
+      query: (data) => ({
+        url: `${PRODUCT_URL}/${data.productId}/reviews/${data.reviewId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Product"]
+    }),
+
     getTopProducts: builder.query({
       query: () => `${PRODUCT_URL}/top`,
       keepUnusedDataFor: 180,
@@ -130,6 +139,7 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useCreateReviewMutation,
+  useUpdateReviewMutation,
   useGetTopProductsQuery,
   useGetNewProductsQuery,
   useUploadProductImageMutation,

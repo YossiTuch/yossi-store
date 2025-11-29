@@ -172,6 +172,47 @@ const addProductReview = asyncHandler(async (req, res) => {
   }
 });
 
+const updateProductReview = asyncHandler(async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const { id: productId, reviewId } = req.params;
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found");
+    }
+
+    const review = product.reviews.id(reviewId);
+
+    if (!review) {
+      res.status(404);
+      throw new Error("Review not found");
+    }
+
+    // Check if the review belongs to the current user
+    if (review.user.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error("Not authorized to edit this review");
+    }
+
+    // Update the review
+    review.rating = Number(rating);
+    review.comment = comment;
+
+    // Recalculate product rating
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    await product.save();
+    res.status(200).json({ message: "Review updated" });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
 const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({})
@@ -254,6 +295,7 @@ export {
   fetchProductById,
   fetchAllProducts,
   addProductReview,
+  updateProductReview,
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,

@@ -32,6 +32,7 @@ const ProductList = lazy(() => import("./pages/Admin/ProductList.jsx"));
 const OrderList = lazy(() => import("./pages/Admin/OrderList.jsx"));
 const Shipping = lazy(() => import("./pages/Orders/Shipping.jsx"));
 const MyOrders = lazy(() => import("./pages/Orders/MyOrders.jsx"));
+const About = lazy(() => import("./pages/About.jsx"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/shop" element={<Shop />} />
+      <Route path="/about" element={<About />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/shipping" element={<Shipping />} />
       <Route path="/placeorder" element={<PlaceOrder />} />

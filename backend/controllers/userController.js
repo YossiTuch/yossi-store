@@ -108,7 +108,10 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
       _id: user._id, 
       username: user.username, 
       email: user.email,
+      isAdmin: user.isAdmin,
       favorites: user.favorites || [],
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     });
   } else {
     res.status(404);
@@ -123,6 +126,35 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
     user.username = req.body.username || user.username;
 
     if (req.body.password) {
+      // Verify current password before allowing password change
+      if (!req.body.currentPassword) {
+        res.status(400);
+        throw new Error("Current password is required to change password.");
+      }
+
+      // Verify the current password matches
+      const isPasswordValid = await bcrypt.compare(
+        req.body.currentPassword,
+        user.password
+      );
+
+      if (!isPasswordValid) {
+        res.status(400);
+        throw new Error("Current password is incorrect.");
+      }
+
+      // Check if new password is different from current password
+      const isSamePassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+
+      if (isSamePassword) {
+        res.status(400);
+        throw new Error("New password must be different from current password.");
+      }
+
+      // Hash and set the new password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       user.password = hashedPassword;
@@ -136,6 +168,8 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
       favorites: updatedUser.favorites || [],
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
     });
   } else {
     res.status(404);
@@ -156,6 +190,8 @@ const updateFavorites = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
       favorites: updatedUser.favorites || [],
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
     });
   } else {
     res.status(404);

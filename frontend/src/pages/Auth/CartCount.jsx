@@ -5,14 +5,12 @@ const CartCount = () => {
   const cartItems = cart?.cartItems || [];
   const totalItems = cartItems.reduce((acc, item) => acc + (item.qty || 0), 0);
 
+  if (totalItems === 0) return null;
+
   return (
-    <>
-      {totalItems > 0 && (
-        <span className="px-1 py-0 text-sm text-white bg-pink-600 rounded-full dark:bg-amber-600">
-          {totalItems > 99 ? "99+" : totalItems}
-        </span>
-      )}
-    </>
+    <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-pink-600 px-1.5 text-xs font-bold text-white dark:bg-amber-600">
+      {totalItems > 99 ? "99+" : totalItems}
+    </span>
   );
 };
 
