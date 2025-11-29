@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import Navigation from "./pages/Auth/Navigation";
 import Footer from "./components/Footer";
@@ -13,6 +13,8 @@ const App = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
   const hasLoadedCartRef = useRef(false);
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
 
   useEffect(() => {
     if (userInfo && userInfo.favorites) {
@@ -60,7 +62,7 @@ const App = () => {
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-white text-pink-900 dark:bg-slate-900 dark:text-amber-400">
       <ToastContainer position="top-right" autoClose={2000} />
       <Navigation />
-      <main className="flex-1 bg-white pt-16 transition-all duration-300 lg:ml-24 dark:bg-slate-900">
+      <main className={`flex-1 bg-white transition-all duration-300 dark:bg-slate-900 ${isAuthPage ? "" : "pt-16 lg:ml-24"}`}>
         <Outlet />
       </main>
       <Footer />

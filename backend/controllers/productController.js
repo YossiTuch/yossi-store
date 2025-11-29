@@ -190,17 +190,14 @@ const updateProductReview = asyncHandler(async (req, res) => {
       throw new Error("Review not found");
     }
 
-    // Check if the review belongs to the current user
     if (review.user.toString() !== req.user._id.toString()) {
       res.status(403);
       throw new Error("Not authorized to edit this review");
     }
 
-    // Update the review
     review.rating = Number(rating);
     review.comment = comment;
 
-    // Recalculate product rating
     product.rating =
       product.reviews.reduce((acc, item) => item.rating + acc, 0) /
       product.reviews.length;

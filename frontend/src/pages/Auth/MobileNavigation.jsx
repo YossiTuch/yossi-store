@@ -9,6 +9,7 @@ import {
   AiOutlineUser,
   AiOutlineLogout,
   AiOutlineClose,
+  AiOutlinePlus,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { Link, useLocation } from "react-router";
@@ -95,7 +96,6 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
       <div
         className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
           mobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
@@ -103,14 +103,12 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
         onClick={() => setMobileMenuOpen(false)}
       />
 
-      {/* Mobile Menu Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] transform bg-gradient-to-b from-slate-900 to-black shadow-2xl transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex h-full flex-col overflow-y-auto">
-          {/* Header */}
           <div className="flex items-center justify-between border-b border-white/10 p-4">
             <div className="flex items-center gap-3">
               {userInfo && (
@@ -139,7 +137,6 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
             </button>
           </div>
 
-          {/* Navigation Links */}
           <div className="flex-1 space-y-1 p-4">
             <NavLink
               to="/"
@@ -197,6 +194,12 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
                   onClick={() => setMobileMenuOpen(false)}
                 />
                 <NavLink
+                  to="/admin/createproduct"
+                  icon={AiOutlinePlus}
+                  label="Create Product"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <NavLink
                   to="/admin/categorylist"
                   icon={AiOutlineFileText}
                   label="Categories"
@@ -218,7 +221,6 @@ const MobileNavigation = ({ userInfo, logoutHandler }) => {
             )}
           </div>
 
-          {/* Footer Actions */}
           <div className="border-t border-white/10 p-4">
             {userInfo ? (
               <>

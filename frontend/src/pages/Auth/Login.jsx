@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../redux/api/usersApiSlice";
 import { setCredentials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+import { AiOutlineMail, AiOutlineLock } from "react-icons/ai";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -37,58 +38,100 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <section className="flex flex-wrap px-4 md:pl-[10rem] md:px-0 max-sm:text-center">
-        <div className="mt-8 mr-0 w-full text-center md:mt-[5rem] md:mr-[4rem] md:w-auto">
-          <h1 className="mb-4 text-2xl font-semibold">Sign In</h1>
-          <form onSubmit={submitHandler} className="container mx-auto w-full max-w-md md:mx-0 md:w-[40rem] md:max-w-none">
-            <div className="my-[2rem]">
-              <label htmlFor="email" className="block text-left w-4/5 mx-auto text-sm font-medium">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-pink-50 py-8 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 sm:py-12">
+      <div className="mx-auto w-full max-w-lg px-4 sm:px-6 lg:max-w-xl lg:px-8">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-800 sm:p-8 lg:p-10">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+              Welcome Back
+            </h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 sm:text-base">
+              Sign in to your account to continue
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={submitHandler} className="space-y-6">
+            {/* Email Field */}
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Email Address
               </label>
-              <input
-                type="email"
-                id="email"
-                className="mt-1 w-4/5 mx-auto rounded border p-2"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="my-[2rem]">
-              <label htmlFor="password" className="block text-left w-4/5 mx-auto text-sm font-medium">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="mt-1 w-4/5 mx-auto rounded border p-2"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <AiOutlineMail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  className="block w-full rounded-lg border border-slate-300 bg-white py-3 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
 
+            {/* Password Field */}
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <AiOutlineLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  className="block w-full rounded-lg border border-slate-300 bg-white py-3 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-amber-500 dark:focus:ring-amber-500/20"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
             <button
               disabled={isLoading}
               type="submit"
-              className="my-[1rem] w-4/5 mx-auto cursor-pointer rounded bg-blue-500 px-4 py-2 text-white duration-200 hover:bg-blue-700 md:w-4/5 dark:bg-amber-600 dark:hover:bg-amber-800"
+              className="w-full rounded-lg bg-gradient-to-r from-pink-600 to-pink-700 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-pink-500/30 transition-all duration-200 hover:from-pink-700 hover:to-pink-800 hover:shadow-xl hover:shadow-pink-500/40 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:from-amber-600 dark:to-amber-700 dark:shadow-amber-500/30 dark:hover:from-amber-700 dark:hover:to-amber-800 dark:focus:ring-amber-500"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <Loader />
+                  <span className="ml-2">Signing In...</span>
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </button>
-            {isLoading && <Loader />}
           </form>
-          <div className="mt-4">
-            <p className="text-center dark:text-white">
-              New Customer?{"  "}
+
+          {/* Register Link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Don't have an account?{" "}
               <Link
                 to={redirect ? `/register?redirect=${redirect}` : "/register"}
-                className="text-blue-500 hover:underline dark:text-amber-400"
+                className="font-semibold text-pink-600 transition-colors hover:text-pink-700 hover:underline dark:text-amber-400 dark:hover:text-amber-300"
               >
                 Sign Up
               </Link>
             </p>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

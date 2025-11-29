@@ -8,7 +8,6 @@ import {
 import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
 import Modal from "../../components/Modal";
-import AdminMenu from "./AdminMenu";
 
 const CategoryList = () => {
   const { data: categories, refetch } = useFetchCategoriesQuery();
@@ -90,10 +89,9 @@ const CategoryList = () => {
   };
 
   return (
-    <div className="flex flex-col px-4 sm:px-6 md:ml-[10rem] md:flex-row">
-    <AdminMenu/>
-      <div className="w-full p-3 md:w-3/4">
-        <div className="mb-4 h-12 text-center text-2xl font-semibold md:text-left">
+    <div className="flex flex-col px-3 sm:px-6 md:ml-[10rem] md:flex-row">
+      <div className="w-full p-2 md:w-3/4 sm:p-3">
+        <div className="mb-3 text-center text-xl font-semibold md:text-left sm:mb-4 sm:h-12 sm:text-2xl">
           Manage Categories
         </div>
         <CategoryForm
@@ -101,14 +99,14 @@ const CategoryList = () => {
           setValue={setName}
           handleSubmit={handleCreateCategory}
         />
-        <br />
-        <hr />
+        <br className="hidden sm:block" />
+        <hr className="my-2 sm:my-0" />
 
-        <div className="mt-4 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2 sm:mt-4 sm:gap-3">
           {categories?.map((category) => (
             <div key={category._id} className="sm:w-auto">
               <button
-                className="focus:ring-opacity-50 w-full rounded-lg border border-blue-700 bg-white px-4 py-2 text-left hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 focus:outline-none sm:text-center md:w-auto dark:border-amber-600 dark:bg-slate-800 dark:hover:bg-amber-500"
+                className="focus:ring-opacity-50 w-full rounded-md border border-blue-700 bg-white px-2 py-1.5 text-left text-sm hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 focus:outline-none sm:w-auto sm:rounded-lg sm:px-4 sm:py-2 sm:text-base dark:border-amber-600 dark:bg-slate-800 dark:hover:bg-amber-500"
                 onClick={() => {
                   {
                     setModalVisible(true);

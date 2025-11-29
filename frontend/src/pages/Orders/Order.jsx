@@ -121,7 +121,6 @@ const Order = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            {/* Order Items */}
             <div className="flex-1 space-y-4">
               <h2 className="mb-4 text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">
                 Order Items
@@ -176,10 +175,8 @@ const Order = () => {
               ))}
             </div>
 
-            {/* Order Summary Sidebar */}
             <div className="lg:w-96">
               <div className="space-y-6">
-                {/* Shipping Address Card */}
                 <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                   <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
                     Shipping Information
@@ -222,7 +219,6 @@ const Order = () => {
                   </div>
                 </div>
 
-                {/* Order Summary Card */}
                 <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                   <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
                     Order Summary
@@ -257,7 +253,6 @@ const Order = () => {
                   </div>
                 </div>
 
-                {/* PayPal Payment */}
                 {order && !order.isPaid && userInfo && userInfo._id === order.user?._id && paypal?.clientId && (
                   <div className="rounded-xl border-2 border-pink-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-amber-700 dark:bg-slate-800">
                     <div className="mb-4 flex items-center justify-between">
@@ -311,7 +306,6 @@ const Order = () => {
                   </div>
                 )}
 
-                {/* Mark as Delivered Button */}
                 {loadingDeliver && <Loader />}
                 {order && userInfo && userInfo._id === order.user?._id && order.isPaid && !order.isDelivered && (
                   <button

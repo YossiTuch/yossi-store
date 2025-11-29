@@ -23,7 +23,6 @@ const ProductTabs = ({
   const [editRating, setEditRating] = useState(0);
   const [editComment, setEditComment] = useState("");
 
-  // Find user's existing review
   const userReview = useMemo(() => {
     if (!userInfo || !product?.reviews) return null;
     return product.reviews.find((review) => {
@@ -36,7 +35,6 @@ const ProductTabs = ({
     });
   }, [userInfo, product?.reviews]);
 
-  // Auto-populate edit form if user has existing review and is on Tab 1
   useEffect(() => {
     if (activeTab === 1 && userReview) {
       setEditRating(userReview.rating);

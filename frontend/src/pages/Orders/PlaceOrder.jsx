@@ -17,7 +17,6 @@ const PlaceOrder = () => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   useEffect(() => {
-    // Don't redirect if we're in the process of placing an order
     if (isPlacingOrder) return;
     
     if (!cart.cartItems || cart.cartItems.length === 0) {
@@ -55,12 +54,9 @@ const PlaceOrder = () => {
         totalPrice: cart.totalPrice || 0,
       }).unwrap();
       
-      // Get order ID and navigate first (synchronous), then clear cart
       const orderId = res._id || res.id;
       if (orderId) {
-        // Navigate immediately (synchronous operation)
         navigate(`/order/${orderId}`, { replace: true });
-        // Clear cart after navigation to prevent useEffect redirect
         setTimeout(() => {
           dispatch(clearCartItems());
         }, 0);
@@ -90,7 +86,6 @@ const PlaceOrder = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            {/* Cart Items */}
             <div className="flex-1 space-y-4">
               <h2 className="mb-4 text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">
                 Order Items
@@ -145,10 +140,8 @@ const PlaceOrder = () => {
               ))}
             </div>
 
-            {/* Order Summary Sidebar */}
             <div className="lg:w-96">
               <div className="space-y-6">
-                {/* Order Summary Card */}
                 <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                   <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
                     Order Summary
@@ -183,7 +176,6 @@ const PlaceOrder = () => {
                   </div>
                 </div>
 
-                {/* Shipping Address Card */}
                 <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                   <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
                     Shipping Address
@@ -208,7 +200,6 @@ const PlaceOrder = () => {
                   </div>
                 </div>
 
-                {/* Payment Method Card */}
                 <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 dark:border-slate-700 dark:bg-slate-800">
                   <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
                     Payment Method
@@ -220,7 +211,6 @@ const PlaceOrder = () => {
                   </div>
                 </div>
 
-                {/* Error Message */}
                 {error && (
                   <div className="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
                     <Message variant="danger">
@@ -229,7 +219,6 @@ const PlaceOrder = () => {
                   </div>
                 )}
 
-                {/* Place Order Button */}
                 <button
                   type="button"
                   className="w-full rounded-full bg-pink-600 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:py-3.5 sm:text-lg dark:bg-amber-600 dark:hover:bg-amber-700 dark:focus:ring-amber-500"

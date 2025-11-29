@@ -8,6 +8,7 @@ import {
   AiOutlineFileText,
   AiOutlineUser,
   AiOutlineLogout,
+  AiOutlinePlus,
 } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { Link, useLocation } from "react-router";
@@ -35,6 +36,13 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownOpen]);
+
+  // Close dropdown when navigation collapses
+  useEffect(() => {
+    if (!isHovered) {
+      setDropdownOpen(false);
+    }
+  }, [isHovered]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -96,17 +104,6 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
               to="/myorders"
               icon={AiOutlineFileText}
               label="My Orders"
-            />
-          </>
-        )}
-
-        {!userInfo && (
-          <>
-            <NavLink to="/login" icon={AiOutlineLogin} label="Login" />
-            <NavLink
-              to="/register"
-              icon={AiOutlineUserAdd}
-              label="Register"
             />
           </>
         )}
@@ -179,6 +176,14 @@ const DesktopNavigation = ({ userInfo, logoutHandler }) => {
                         >
                           <AiOutlineShopping className="text-lg" />
                           Products
+                        </Link>
+                        <Link
+                          to="/admin/createproduct"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-pink-50 hover:text-pink-600 dark:text-gray-300 dark:hover:bg-amber-900/20 dark:hover:text-amber-400"
+                        >
+                          <AiOutlinePlus className="text-lg" />
+                          Create Product
                         </Link>
                         <Link
                           to="/admin/categorylist"

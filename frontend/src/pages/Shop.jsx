@@ -97,7 +97,6 @@ const Shop = () => {
 
     let filtered = productsData;
 
-    // Apply search filter
     if (debouncedSearchTerm) {
       const searchLower = debouncedSearchTerm.toLowerCase().trim();
       filtered = filtered.filter((product) => {
@@ -113,13 +112,11 @@ const Shop = () => {
     }
 
     if (debouncedPriceFilter) {
-      // Check if input is a range (e.g., "10-50", "10 to 50", "10 - 50")
       const rangeMatch = debouncedPriceFilter.match(
         /^(\d+(?:\.\d+)?)\s*(?:-|to)\s*(\d+(?:\.\d+)?)$/i,
       );
 
       if (rangeMatch) {
-        // Range search: filter products between min and max price
         const minPrice = parseFloat(rangeMatch[1]);
         const maxPrice = parseFloat(rangeMatch[2]);
 
@@ -143,12 +140,11 @@ const Shop = () => {
           });
         }
       } else {
-        // Single price: search around the price (±10% or minimum ±$5, whichever is larger)
         const filterNum = parseFloat(debouncedPriceFilter);
         const isValidNumber = !isNaN(filterNum) && isFinite(filterNum);
 
         if (isValidNumber && filterNum > 0) {
-          const tolerance = Math.max(filterNum * 0.1, 5); // 10% or $5, whichever is larger
+          const tolerance = Math.max(filterNum * 0.1, 5);
           const minPrice = filterNum - tolerance;
           const maxPrice = filterNum + tolerance;
 
@@ -162,7 +158,6 @@ const Shop = () => {
             );
           });
         } else {
-          // Fallback: string search if not a valid number
           filtered = filtered.filter((product) => {
             if (!product.price) return false;
             const priceStr = product.price.toString();
@@ -369,7 +364,6 @@ const Shop = () => {
                 </span>
               </div>
               
-              {/* Search Bar */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg

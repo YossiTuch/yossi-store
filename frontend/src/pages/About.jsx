@@ -44,7 +44,6 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header Section */}
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
             About YossiStore
@@ -54,7 +53,6 @@ const About = () => {
           </p>
         </div>
 
-        {/* Main Content */}
         <div className="mt-16">
           <div className="mx-auto max-w-3xl">
             <div className="prose prose-lg dark:prose-invert mx-auto">
@@ -90,7 +88,6 @@ const About = () => {
             </div>
           </div>
 
-          {/* Features Grid */}
           <div className="mt-16">
             <h2 className="mb-8 text-center text-3xl font-bold text-gray-900 dark:text-white">
               Why Choose YossiStore?
@@ -115,7 +112,6 @@ const About = () => {
             </div>
           </div>
 
-          {/* Call to Action */}
           <div className="mt-16 text-center">
             <div className="rounded-xl bg-gradient-to-r from-pink-50 to-amber-50 p-8 dark:from-slate-800 dark:to-slate-700">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">

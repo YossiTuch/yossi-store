@@ -50,15 +50,12 @@ const ProductDetails = () => {
       }).unwrap();
       refetch();
       toast.success("Review created successfully");
-      // Reset form after successful creation
       setRating(0);
       setComment("");
     } catch (error) {
       const errorMessage = error?.data?.message || error?.message || "Failed to create review";
-      // If user already reviewed, show helpful message
       if (errorMessage.includes("already reviewed") || errorMessage.includes("Product already reviewed")) {
         toast.error("You've already reviewed this product. Your review is shown in edit mode.");
-        // Refetch to ensure we have the latest review data
         refetch();
       } else {
         toast.error(errorMessage);

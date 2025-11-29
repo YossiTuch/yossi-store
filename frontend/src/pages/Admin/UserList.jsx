@@ -8,7 +8,6 @@ import {
   useUpdateUserMutation,
 } from "../../redux/api/usersApiSlice";
 import { toast } from "react-toastify";
-import AdminMenu from "./AdminMenu";
 
 const UserList = () => {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
@@ -54,8 +53,8 @@ const UserList = () => {
   };
 
   return (
-    <div className="mx-auto w-4/5 p-2 sm:p-4">
-      <h1 className="my-7 text-center text-3xl font-semibold">Users</h1>
+    <div className="mx-auto w-full p-2 sm:w-4/5 sm:p-4">
+      <h1 className="my-3 text-center text-xl font-semibold sm:my-7 sm:text-3xl">Users</h1>
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -64,74 +63,73 @@ const UserList = () => {
         </Message>
       ) : (
         <div className="flex flex-col md:flex-row">
-          <AdminMenu />
           <div className="-mx-2 w-full overflow-x-auto sm:mx-auto md:w-4/5">
-            <table className="mx-auto w-full min-w-[640px]">
+            <table className="mx-auto w-full min-w-[500px] text-xs sm:min-w-[640px] sm:text-sm">
               <thead>
                 <tr>
-                  <th className="px-2 py-2 text-left sm:px-4">ID</th>
-                  <th className="px-2 py-2 text-left sm:px-4">NAME</th>
-                  <th className="px-2 py-2 text-left sm:px-4">EMAIL</th>
-                  <th className="px-2 py-2 text-left sm:px-4">ADMIN</th>
-                  <th className="px-2 py-2 sm:px-4"></th>
+                  <th className="px-1.5 py-1.5 text-left text-[10px] sm:px-4 sm:py-2 sm:text-sm">ID</th>
+                  <th className="px-1.5 py-1.5 text-left text-[10px] sm:px-4 sm:py-2 sm:text-sm">NAME</th>
+                  <th className="px-1.5 py-1.5 text-left text-[10px] sm:px-4 sm:py-2 sm:text-sm">EMAIL</th>
+                  <th className="px-1.5 py-1.5 text-left text-[10px] sm:px-4 sm:py-2 sm:text-sm">ADMIN</th>
+                  <th className="px-1.5 py-1.5 text-[10px] sm:px-4 sm:py-2 sm:text-sm"></th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user._id}>
-                    <td className="px-2 py-2 sm:px-4">{user._id}</td>
-                    <td className="px-2 py-2 sm:px-4">
+                    <td className="px-1.5 py-1.5 text-[10px] sm:px-4 sm:py-2 sm:text-xs">{user._id.slice(0, 8)}...</td>
+                    <td className="px-1.5 py-1.5 sm:px-4 sm:py-2">
                       {editableUserId === user._id ? (
-                        <div className="flex flex-col items-stretch sm:flex-row sm:items-center">
+                        <div className="flex flex-col items-stretch gap-1 sm:flex-row sm:items-center sm:gap-0">
                           <input
                             type="text"
                             value={editableUserName}
                             onChange={(e) =>
                               setEditableUserName(e.target.value)
                             }
-                            className="min-h-[44px] w-full rounded-lg border p-2 sm:min-h-0"
+                            className="min-h-[36px] w-full rounded-md border p-1.5 text-xs sm:min-h-0 sm:rounded-lg sm:p-2 sm:text-sm"
                           />
                           <button
                             onClick={() => updateHandler(user._id)}
-                            className="mt-2 ml-0 min-h-[44px] rounded-lg bg-blue-500 px-4 py-2 text-white sm:mt-0 sm:ml-2 sm:min-h-0"
+                            className="min-h-[36px] rounded-md bg-blue-500 px-2 py-1 text-white sm:ml-2 sm:min-h-0 sm:rounded-lg sm:px-4 sm:py-2"
                           >
-                            <FaCheck />
+                            <FaCheck className="text-xs sm:text-sm" />
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center">
-                          {user.username}{" "}
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] sm:text-sm">{user.username}</span>
                           <button
                             onClick={() =>
                               toggleEdit(user._id, user.username)
                             }
-                            className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
+                            className="min-h-[28px] min-w-[28px] sm:min-h-0 sm:min-w-0"
                           >
-                            <FaEdit className="ml-[1rem]" />
+                            <FaEdit className="ml-0.5 text-xs sm:ml-4 sm:text-sm" />
                           </button>
                         </div>
                       )}
                     </td>
-                    <td className="px-2 py-2 sm:px-4">
-                      <a href={`mailto:${user.email}`} className="text-blue-600 hover:underline dark:text-blue-400">
-                        {user.email}
+                    <td className="px-1.5 py-1.5 sm:px-4 sm:py-2">
+                      <a href={`mailto:${user.email}`} className="text-[10px] text-blue-600 hover:underline dark:text-blue-400 sm:text-sm">
+                        {user.email.length > 20 ? `${user.email.slice(0, 20)}...` : user.email}
                       </a>
                     </td>
-                    <td className="px-2 py-2 sm:px-4">
+                    <td className="px-1.5 py-1.5 sm:px-4 sm:py-2">
                       {user.isAdmin ? (
-                        <FaCheck style={{ color: "green" }} />
+                        <FaCheck className="text-xs sm:text-sm" style={{ color: "green" }} />
                       ) : (
-                        <FaTimes style={{ color: "red" }} />
+                        <FaTimes className="text-xs sm:text-sm" style={{ color: "red" }} />
                       )}
                     </td>
-                    <td className="px-2 py-2 sm:px-4">
+                    <td className="px-1.5 py-1.5 sm:px-4 sm:py-2">
                       {!user.isAdmin && (
                         <div className="flex">
                           <button
                             onClick={() => deleteHandler(user._id)}
-                            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 sm:min-h-0 sm:min-w-0"
+                            className="flex min-h-[28px] min-w-[28px] items-center justify-center rounded bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700 sm:min-h-0 sm:min-w-0 sm:px-4 sm:py-2"
                           >
-                            <FaTrash />
+                            <FaTrash className="text-xs sm:text-sm" />
                           </button>
                         </div>
                       )}

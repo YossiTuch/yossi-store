@@ -13,7 +13,6 @@ const Footer = () => {
     <footer className="mt-auto border-t border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          {/* Left Section - Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:justify-start">
             <Link
               to="/"
@@ -38,14 +37,12 @@ const Footer = () => {
             </Link>
           </div>
 
-          {/* Center Section - Copyright */}
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               © {currentYear} YossiStore. All rights reserved.
             </p>
           </div>
 
-          {/* Right Section - Dark Mode Toggle */}
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Theme:

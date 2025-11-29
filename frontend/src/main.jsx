@@ -18,6 +18,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import PlaceOrder from "./pages/Orders/PlaceOrder.jsx";
 import Order from "./pages/Orders/Order.jsx";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 const Login = lazy(() => import("./pages/Auth/Login.jsx"));
 const Register = lazy(() => import("./pages/Auth/Register.jsx"));
 const Profile = lazy(() => import("./pages/User/Profile.jsx"));
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
         <Route path="productlist" element={<ProductList />} />
         <Route path="product/update/:_id" element={<ProductUpdate />} />
         <Route path="orderlist" element={<OrderList />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
       </Route>
     </Route>,
   ),
