@@ -9,7 +9,6 @@ import {
 } from "../../redux/api/usersApiSlice";
 import ProfileView from "./ProfileView";
 import ProfileEditForm from "./ProfileEditForm";
-import QuickActionsSidebar from "./QuickActionsSidebar";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -136,8 +135,8 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="grid gap-6">
+          <div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-800 sm:p-8">
               {!isEditing ? (
                 <ProfileView user={user} formatDate={formatDate} />
@@ -158,10 +157,6 @@ const Profile = () => {
                 />
               )}
             </div>
-          </div>
-
-          <div className="lg:col-span-1">
-            <QuickActionsSidebar user={user} />
           </div>
         </div>
       </div>
